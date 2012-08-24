@@ -29,7 +29,7 @@ setup(
     author='Jae-Myoung Yu',
     author_email='euphoris' '@' 'gmail.com',
     url='https://bitbucket.org/euphoris/lifemetr',
-    install_requires=['flask'],
+    install_requires=['flask', 'sqlalchemy'],
     tests_require=['pytest'],
     cmdclass={'test': test}
 )
