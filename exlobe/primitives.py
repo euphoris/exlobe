@@ -62,7 +62,9 @@ class Page(Base):
     def get(cls, page_id, session=None):
         if not session:
             session = Session()
-        return session.query(Page).filter_by(id=page_id).one()
+        page = session.query(Page).filter_by(id=page_id).one()
+        page.ideas
+        return page
 
     @classmethod
     def list(cls):
