@@ -1,0 +1,3 @@
+[submodule "exlobe/static/nestedSortable"]
+	path = exlobe/static/nestedSortable
+	url = git@github.com:euphoris/nestedSortable.git
