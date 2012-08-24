@@ -7,52 +7,49 @@ import sys
 
 from flask import Flask, redirect, render_template, request, url_for
 
-from .primitives import Idea, Session, User
+from .primitives import Idea, Page
 
 
 app = Flask(__name__)
 
 
-def save_idea(request, parent_id):
+@app.route('/page', methods=['GET'])
+def get_page_list():
+    pages = Page.list()
+    return render_template('page_list.html', pages=pages)
+
+
+@app.route('/page', methods=['POST'])
+def new_page():
+    page = Page.new()
+    return redirect(url_for('get_page', page_id=page.id))
+
+
+@app.route('/page/<int:page_id>', methods=['GET'])
+def get_page(page_id):
+    page = Page.get(page_id)
+    page_list = Page.list()
+    return render_template('page.html', page_id=page_id, pages=[page],
+        page_list=page_list)
+
+
+@app.route('/page/<int:page1_id>/<int:page2_id>', methods=['GET'])
+def get_pages(page1_id, page2_id):
+    page1 = Page.get(page1_id)
+    page2 = Page.get(page2_id)
+    return render_template('page.html', pages=[page1, page2])
+
+
+@app.route('/page/<int:page_id>', methods=['POST'])
+def new_idea(page_id):
     content = request.form['content'].strip()
-    session = Session(autocommit=True)
-    with session.begin():
-        parent = session.query(Idea).filter_by(id=parent_id).one()
-        idea = Idea(content=content)
-        session.add(idea)
-        parent.children.append(idea)
-
-    return session, idea
+    Idea.new(page_id, content)
+    return redirect(url_for('get_page', page_id=page_id))
 
 
-@app.route('/<int:idea_id>', methods=['POST'])
-def post_idea(idea_id):
-    save_idea(request, idea_id)
-    return redirect(url_for('get_idea', idea_id=idea_id))
-
-
-@app.route('/', methods=['POST'])
-def post_home():
-    session = Session()
-    parent = session.query(User).first().idea
-    save_idea(request, parent.id)
-    return redirect(url_for('get_home'))
-
-
-@app.route('/<int:idea_id>')
-def get_idea(idea_id):
-    session = Session()
-    parent = session.query(Idea).filter_by(id=idea_id).one()
-    children = parent.children
-    return render_template('home.html', parent=parent, children=children)
-
-
-@app.route('/')
-def get_home():
-    session = Session()
-    parent = session.query(User).first().idea
-    children = parent.children
-    return render_template('home.html', parent=parent, children=children)
+@app.route('/', methods=['GET'])
+def home():
+    return redirect(url_for('get_page_list'))
 
 
 def main():

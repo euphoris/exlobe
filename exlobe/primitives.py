@@ -3,14 +3,14 @@
 
 """
 
-from sqlalchemy import create_engine, desc, Column
-from sqlalchemy.types import Integer, String
+from sqlalchemy import create_engine, Column
+from sqlalchemy.types import Integer, String, TEXT
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.schema import ForeignKey, Table
 
 
-__all__ = ('Idea', 'Session', 'User')
+__all__ = ('Idea', 'Page', 'Session')
 
 
 Base = declarative_base()
@@ -19,8 +19,8 @@ Session = sessionmaker(bind=engine)
 
 
 association_table = Table('association', Base.metadata,
-    Column('parent_id', Integer, ForeignKey('idea.id')),
-    Column('child_id', Integer, ForeignKey('idea.id'))
+    Column('page_id', Integer, ForeignKey('page.id')),
+    Column('idea_id', Integer, ForeignKey('idea.id'))
 )
 
 
@@ -29,29 +29,45 @@ class Idea(Base):
 
     id = Column(Integer, primary_key=True)
     content = Column(String)
-    children = relationship("Idea",
-                        secondary=association_table,
-                        primaryjoin=id==association_table.c.parent_id,
-                        secondaryjoin=id==association_table.c.child_id,
-                        backref="parents",
-                        order_by=desc('idea.id'))
+
+    @classmethod
+    def new(cls, page_id, content):
+        session = Session(autocommit=True)
+        with session.begin():
+            page = Page.get(page_id, session)
+            idea = Idea(content=content)
+            session.add(idea)
+            page.ideas.append(idea)
 
 
-class User(Base):
-    __tablename__ = 'user'
+class Page(Base):
+    __tablename__ = 'page'
     id = Column(Integer, primary_key=True)
-    idea_id = Column(Integer, ForeignKey(Idea.id))
-    idea = relationship(Idea)
+    title = Column(String)
+    struct = Column(TEXT)
+    ideas = relationship("Idea",
+                        secondary=association_table,
+                        backref="pages")
+
+    @classmethod
+    def new(cls):
+        session = Session()
+        page = Page(title='(no title)', struct='[]')
+        session.add(page)
+        session.commit()
+        return page
+
+    @classmethod
+    def get(cls, page_id, session=None):
+        if not session:
+            session = Session()
+        return session.query(Page).filter_by(id=page_id).one()
+
+    @classmethod
+    def list(cls):
+        session = Session()
+        return session.query(Page)
 
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
-    session = Session(autocommit=True)
-
-    with session.begin():
-        idea = Idea(content='')
-        session.add(idea)
-
-    with session.begin():
-        user = User(idea=idea)
-        session.add(user)

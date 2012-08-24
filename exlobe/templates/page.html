@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% for page in pages %}
+<div class="document">
+    <h2>{{page.title}}</h2>
+    <form id="new-idea" method="POST"
+        action="{{ url_for('new_idea', page_id=page.id) }}">
+        <textarea name="content" class="idea"></textarea>
+        <button>New idea</button>
+    </form>
+
+    <ol class="idea-list">
+        {% for idea in page.ideas %}
+        <li><div class="idea">{{ idea.content }}
+            <div class="idea-menu">
+                <a class="copy" href="#">c</a><br>
+                <a class="remove" href="#">x</a>
+            </div>
+        </div>
+        </li>
+        {% endfor %}
+    </ol>
+</div>
+{% endfor %}
+
+{% if page_list %}
+<div class="document">
+    <ul>
+    {% for page in page_list %}
+        {% if page.id != page_id %}
+        <li>
+            <a href="{{ url_for('get_pages',
+                page1_id=page_id, page2_id=page.id) }}">
+                {{page.title}}
+            </a>
+        </li>
+        {% endif %}
+    {% endfor %}
+    <ul>
+
+</div>
+{% endif %}
+{% endblock %}

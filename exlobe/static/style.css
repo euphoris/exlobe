@@ -1,0 +1,39 @@
+div#menu {
+    margin-bottom: 20px;
+}
+
+.idea {
+    width: 258px;
+    height: 75px;
+    font-size: 14px;
+    line-height: 18px;
+    border: 1px solid;
+    background-color: white;
+    margin: 5px;
+    padding: 1px;
+    font-family: "Helvetica Neue",Arial,sans-serif;
+}
+
+div.idea-menu {
+    padding: 0px;
+    margin: 0px;
+    float: right;
+}
+
+ol.idea-list {
+    width: 500px;
+    min-height: 50%;
+    border: gray 1px dashed;
+}
+
+div.document {
+    float: left;
+    width: 580px;
+    min-height: 50%;
+    margin: 20px;
+    border: 1px solid;
+    padding: 20px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 10px;
+}

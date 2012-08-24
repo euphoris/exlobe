@@ -2,8 +2,15 @@
     <head>
         <title>exlobe</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}"/>
+        <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+        <script src="{{ url_for('static', filename='jquery-ui.js') }}"></script>
+        <script src="{{ url_for('static', filename='nested.js') }}"></script>
+        <script src="{{ url_for('static', filename='exlobe.js') }}"></script>
     </head>
     <body>
+        <div id="menu">
+            <a href="/">HOME</a>
+        </div>
         {% block body %}
         {% endblock %}
     </body>

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<form method="POST">
+    <button>New page</button>
+</form>
+
+<ul>
+{% for page in pages %}
+    <li>
+        <a href="{{ url_for('get_page', page_id=page.id) }}">
+            {{page.title}}
+        </a>
+    </li>
+{% endfor %}
+</ul>
+
+{% endblock %}
