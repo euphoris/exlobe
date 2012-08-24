@@ -29,13 +29,14 @@ class Idea(Base):
 
     id = Column(Integer, primary_key=True)
     content = Column(String)
+    reference_count = Column(Integer)
 
     @classmethod
     def new(cls, page_id, content):
         session = Session(autocommit=True)
         with session.begin():
             page = Page.get(page_id, session)
-            idea = Idea(content=content)
+            idea = Idea(content=content, reference_count=1)
             session.add(idea)
             page.ideas.append(idea)
 
@@ -72,6 +73,19 @@ class Page(Base):
     def reset_title(cls, page_id, title):
         session = Session()
         session.query(Page).filter_by(id=page_id).update({'title': title})
+        session.commit()
+
+    @classmethod
+    def delete(cls, page_id):
+        session = Session()
+        page = session.query(Page).filter_by(id=page_id).one()
+
+        # delete orphaned ideas
+        for idea in page.ideas:
+            if idea.reference_count <= 1:
+                session.delete(idea)
+
+        session.delete(page)
         session.commit()
 
 

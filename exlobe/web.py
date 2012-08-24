@@ -47,6 +47,12 @@ def get_pages(page1_id, page2_id):
     return render_template('page.html', pages=[page1, page2])
 
 
+@app.route('/page/<int:page_id>/delete', methods=['POST'])
+def delete_page(page_id):
+    Page.delete(page_id)
+    return redirect(url_for('get_page_list'))
+
+
 @app.route('/page/<int:page_id>', methods=['POST'])
 def new_idea(page_id):
     content = request.form['content'].strip()
