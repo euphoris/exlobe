@@ -3,7 +3,17 @@
 {% block body %}
 {% for page in pages %}
 <div class="document">
-    <h2>{{page.title}}</h2>
+    <span class="title">
+        <span>{{page.title}}</span>
+        <a class="change-title" href="#">#</a>
+    </span>
+
+    <form class="page-title" method="POST"
+        action="{{url_for('page_title',page_id=page.id)}}">
+        <input name="title" type="text" value="{{page.title}}">
+        <button>change the title</button>
+    </form>
+
     <form id="new-idea" method="POST"
         action="{{ url_for('new_idea', page_id=page.id) }}">
         <textarea name="content" class="idea"></textarea>

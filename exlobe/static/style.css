@@ -2,6 +2,19 @@ div#menu {
     margin-bottom: 20px;
 }
 
+form.page-title {
+    display: none;
+}
+
+.title span {
+    font-size: 20px;
+}
+
+.page-title input {
+    font-size: 20px;
+    border: lightgray 1px solid;
+}
+
 .idea {
     width: 258px;
     height: 75px;

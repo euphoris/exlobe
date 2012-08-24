@@ -18,4 +18,28 @@ $(function(){
         $(li1).remove();
         return false;
     });
+
+    $('a.change-title').live('click', function(){
+        title = $(this).parent('span')
+        title.next('form.page-title').show();
+        title.hide();
+        return false;
+    });
+
+    $('form.page-title').submit(function(){
+        form = $(this)
+        title = $(this).children('input').val();
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: {title: title},
+            success: function(data, textStatus, jqXHR){
+                title = form.prev('span');
+                title.children('span').text(data);
+                title.show();
+                form.hide();
+            }
+        });
+        return false;
+    });
 });

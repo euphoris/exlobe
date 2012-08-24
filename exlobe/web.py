@@ -25,6 +25,13 @@ def new_page():
     return redirect(url_for('get_page', page_id=page.id))
 
 
+@app.route('/page/<int:page_id>/title', methods=['POST'])
+def page_title(page_id):
+    title = request.form['title'].strip()
+    Page.reset_title(page_id, title)
+    return title
+
+
 @app.route('/page/<int:page_id>', methods=['GET'])
 def get_page(page_id):
     page = Page.get(page_id)

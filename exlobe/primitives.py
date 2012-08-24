@@ -68,6 +68,12 @@ class Page(Base):
         session = Session()
         return session.query(Page)
 
+    @classmethod
+    def reset_title(cls, page_id, title):
+        session = Session()
+        session.query(Page).filter_by(id=page_id).update({'title': title})
+        session.commit()
+
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
