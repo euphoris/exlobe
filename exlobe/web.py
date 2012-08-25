@@ -65,7 +65,7 @@ def page_title(page_id):
 
 def valid_tree(struct):
     depth = 0
-    struct = struct.split(' ')
+    struct = struct.strip().split(' ')
     for s in struct:
         if s == '[':
             depth += 1
@@ -85,6 +85,29 @@ def save_page(page_id):
     if valid_tree(struct):
         Page.update(page_id, dict(struct=struct))
     return 'ok'
+
+
+@srg.template_filter('render_page')
+def render_page(page):
+    ideas = {}
+    for idea in page.ideas:
+        ideas[idea.id] = idea.content
+
+    tree = ''
+    struct = page.struct.strip().split()
+    for s in struct:
+        if s == '[':
+            tree += u'<ol>'
+        elif s == ']':
+            tree += u'</ol>'
+        else:
+            i = int(s)
+            try:
+                tree += u'<li id="{}"><div class="idea">{}</div>'\
+                    .format(i, ideas[i])
+            except KeyError:
+                pass
+    return tree
 
 
 @srg.route('/page/<int:page_id>', methods=['GET'])

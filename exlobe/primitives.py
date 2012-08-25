@@ -71,7 +71,7 @@ class Page(Base, Managed):
     def new(cls):
         session = Session()
         with session.begin():
-            page = Page(title='(no title)', struct='[]')
+            page = Page(title='(no title)', struct='')
             session.add(page)
         return page
 

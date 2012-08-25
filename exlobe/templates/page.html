@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<div id="menu-skeleton" style="display: none">
+    <div class="idea-menu">
+        <a class="copy" href="#">c</a><br>
+        <a class="remove" href="#">x</a>
+    </div>
+</div>
+
 {% for page in pages %}
 <div class="document">
     <span class="title">
@@ -31,15 +38,7 @@
     </form>
 
     <ol class="idea-list">
-        {% for idea in page.ideas %}
-        <li id="{{idea.id}}"><div class="idea">{{ idea.content }}
-            <div class="idea-menu">
-                <a class="copy" href="#">c</a><br>
-                <a class="remove" href="#">x</a>
-            </div>
-        </div>
-        </li>
-        {% endfor %}
+        {{page|render_page|safe}}
     </ol>
 </div>
 {% endfor %}

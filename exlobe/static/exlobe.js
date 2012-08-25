@@ -1,4 +1,8 @@
 $(function(){
+    $('.idea').each(function(){
+        $($('#menu-skeleton').html()).appendTo(this);
+    });
+
     $('.idea-list').nestedSortable({
         connectWith: ".idea-list",
         handle: 'div',
