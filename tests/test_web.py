@@ -3,7 +3,7 @@ from tempfile import NamedTemporaryFile
 from flask import url_for
 
 from exlobe.primitives import Idea, Page
-from exlobe.web import create_app
+from exlobe.web import create_app, valid_tree
 
 HTTP_OK = 200
 HTTP_REDIRECT = 302
@@ -92,3 +92,7 @@ class TestGet(TestBase):
         rv = self.get('home')
         assert rv.status_code == HTTP_REDIRECT
         assert rv.headers['location'].endswith('/page')
+
+
+def test_valid_tree():
+    assert valid_tree('1 [ 2 ] 3 [ 4 [ 5 ] ] 6')
