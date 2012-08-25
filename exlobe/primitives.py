@@ -27,7 +27,14 @@ association_table = Table('association', Base.metadata,
 )
 
 
-class Idea(Base):
+class Managed(object):
+    @classmethod
+    def count(cls):
+        session = Session()
+        return session.query(cls).count()
+
+
+class Idea(Base, Managed):
     __tablename__ = 'idea'
 
     id = Column(Integer, primary_key=True)
@@ -44,7 +51,7 @@ class Idea(Base):
             page.ideas.append(idea)
 
 
-class Page(Base):
+class Page(Base, Managed):
     __tablename__ = 'page'
     id = Column(Integer, primary_key=True)
     title = Column(String)
