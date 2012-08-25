@@ -33,6 +33,13 @@ class Managed(object):
         session = Session()
         return session.query(cls).count()
 
+    @classmethod
+    def update(cls, id, data):
+        session = Session()
+        session.begin()
+        session.query(Page).filter_by(id=id).update(data)
+        session.commit()
+
 
 class Idea(Base, Managed):
     __tablename__ = 'idea'
@@ -80,13 +87,6 @@ class Page(Base, Managed):
     def list(cls):
         session = Session()
         return session.query(Page)
-
-    @classmethod
-    def reset_title(cls, page_id, title):
-        session = Session()
-        session.begin()
-        session.query(Page).filter_by(id=page_id).update({'title': title})
-        session.commit()
 
     @classmethod
     def delete(cls, page_id):

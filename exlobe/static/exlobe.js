@@ -26,6 +26,30 @@ $(function(){
         return false;
     });
 
+    function getTree(ol){
+        var struct = ''
+        ol.children('li').each(function(){
+            struct = struct + '[' + $(this).attr('id');
+            var ol = $(this).children('ol');
+            if( ol.length > 0 ){
+                struct += getTree(ol);
+            }
+            struct += ']'
+        })
+        return struct
+    }
+
+    $('form.save-page').submit(function(){
+        var ol = $(this).parent('.document').children('ol.idea-list');
+        var struct = getTree(ol);
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: {struct: struct},
+        })
+        return false;
+    });
+
     $('form.page-title').submit(function(){
         form = $(this)
         title = $(this).children('input').val();

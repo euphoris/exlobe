@@ -48,8 +48,30 @@ def new_page():
 @route('/page/<int:page_id>/title', methods=['POST'])
 def page_title(page_id):
     title = request.form['title'].strip()
-    Page.reset_title(page_id, title)
+    Page.update(page_id, dict(title=title))
     return title
+
+
+def valid_tree(struct):
+    depth = 0
+    for s in struct:
+        if s == '[':
+            depth += 1
+        elif s == ']':
+            depth -= 1
+        elif s in '0123456789':
+            pass
+        else:
+            return False
+    return depth == 0
+
+
+@route('/page/<int:page_id>/save', methods=['POST'])
+def save_page(page_id):
+    struct = request.form['struct']
+    if valid_tree(struct):
+        Page.update(page_id, dict(struct=struct))
+    return 'ok'
 
 
 @route('/page/<int:page_id>', methods=['GET'])

@@ -14,8 +14,14 @@
         <button>change the title</button>
     </form>
 
-    <form method="POST" action="{{url_for('delete_page', page_id=page.id)}}">
+    <form method="POST" style="float: right"
+        action="{{url_for('delete_page', page_id=page.id)}}">
         <button>delete this page</button>
+    </form>
+
+    <form class="save-page" method="POST"
+        action="{{url_for('save_page', page_id=page.id)}}">
+        <button>save</button>
     </form>
 
     <form id="new-idea" method="POST"
@@ -26,7 +32,7 @@
 
     <ol class="idea-list">
         {% for idea in page.ideas %}
-        <li><div class="idea">{{ idea.content }}
+        <li id="{{idea.id}}"><div class="idea">{{ idea.content }}
             <div class="idea-menu">
                 <a class="copy" href="#">c</a><br>
                 <a class="remove" href="#">x</a>

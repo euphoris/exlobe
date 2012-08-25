@@ -58,6 +58,22 @@ class TestGet(TestBase):
         assert rv.data == title
         assert Page.get(1).title == title
 
+    def test_save_page(self):
+        struct = '[1[2]][3[4[5]]]'
+        rv = self.post('save_page', data=dict(struct=struct), page_id=1)
+        assert rv.status_code == HTTP_OK
+        assert Page.get(1).struct == struct
+
+        # malformed
+        rv = self.post('save_page', data=dict(struct=struct[:-1]), page_id=1)
+        assert rv.status_code == HTTP_OK
+        assert Page.get(1).struct == struct
+
+        # invalid token
+        rv = self.post('save_page', data=dict(struct='hello world'), page_id=1)
+        assert rv.status_code == HTTP_OK
+        assert Page.get(1).struct == struct
+
     def test_get_page(self):
         rv = self.get('get_page', page_id=1)
         assert rv.status_code == HTTP_OK 
