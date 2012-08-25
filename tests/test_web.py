@@ -59,7 +59,7 @@ class TestGet(TestBase):
         assert Page.get(1).title == title
 
     def test_save_page(self):
-        struct = '[1[2]][3[4[5]]]'
+        struct = '1 [ 2 ] 3 [ 4 [ 5 6 ] ]'
         rv = self.post('save_page', data=dict(struct=struct), page_id=1)
         assert rv.status_code == HTTP_OK
         assert Page.get(1).struct == struct

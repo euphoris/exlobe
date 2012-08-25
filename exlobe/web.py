@@ -54,15 +54,17 @@ def page_title(page_id):
 
 def valid_tree(struct):
     depth = 0
+    struct = struct.split(' ')
     for s in struct:
         if s == '[':
             depth += 1
         elif s == ']':
             depth -= 1
-        elif s in '0123456789':
-            pass
         else:
-            return False
+            try:
+                int(s)
+            except ValueError:
+                return False
     return depth == 0
 
 

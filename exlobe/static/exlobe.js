@@ -29,13 +29,12 @@ $(function(){
     function getTree(ol){
         var struct = ''
         ol.children('li').each(function(){
-            struct = struct + '[' + $(this).attr('id');
+            struct += $(this).attr('id') + ' ';
             var ol = $(this).children('ol');
             if( ol.length > 0 ){
-                struct += getTree(ol);
+                struct += '[ ' + getTree(ol) + '] ';
             }
-            struct += ']'
-        })
+        });
         return struct
     }
 
