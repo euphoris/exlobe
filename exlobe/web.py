@@ -16,36 +16,47 @@ class Exlobe(Flask):
         self.db_engine = init_db(uri, echo=True)
 
 
-class Router(object):
+class Surrogate(object):
     def __init__(self):
-        self.route = []
+        self._route = []
+        self._filter = []
 
-    def __call__(self, url, **kwargs):
+    def route(self, url, **kwargs):
         def append(f):
-            self.route.append((url, kwargs, f))
+            self._route.append((url, kwargs, f))
             return f
         return append
 
-    def addon(self, app):
-        for url, kwargs, f in self.route:
+    def template_filter(self, name, **kwargs):
+        def append(f):
+            self._filter.append((name, kwargs, f))
+            return f
+        return append
+
+    def incarnate(self, app):
+        for url, kwargs, f in self._route:
             app.route(url, **kwargs)(f)
 
-route = Router()
+        for name, kwargs, f in self._filter:
+            app.template_filter(name, **kwargs)(f)
 
 
-@route('/page', methods=['GET'])
+srg = Surrogate()
+
+
+@srg.route('/page', methods=['GET'])
 def get_page_list():
     pages = Page.list()
     return render_template('page_list.html', pages=pages)
 
 
-@route('/page', methods=['POST'])
+@srg.route('/page', methods=['POST'])
 def new_page():
     page = Page.new()
     return redirect(url_for('get_page', page_id=page.id))
 
 
-@route('/page/<int:page_id>/title', methods=['POST'])
+@srg.route('/page/<int:page_id>/title', methods=['POST'])
 def page_title(page_id):
     title = request.form['title'].strip()
     Page.update(page_id, dict(title=title))
@@ -68,7 +79,7 @@ def valid_tree(struct):
     return depth == 0
 
 
-@route('/page/<int:page_id>/save', methods=['POST'])
+@srg.route('/page/<int:page_id>/save', methods=['POST'])
 def save_page(page_id):
     struct = request.form['struct']
     if valid_tree(struct):
@@ -76,7 +87,7 @@ def save_page(page_id):
     return 'ok'
 
 
-@route('/page/<int:page_id>', methods=['GET'])
+@srg.route('/page/<int:page_id>', methods=['GET'])
 def get_page(page_id):
     page = Page.get(page_id)
     page_list = Page.list()
@@ -84,34 +95,34 @@ def get_page(page_id):
         page_list=page_list)
 
 
-@route('/page/<int:page1_id>/<int:page2_id>', methods=['GET'])
+@srg.route('/page/<int:page1_id>/<int:page2_id>', methods=['GET'])
 def get_pages(page1_id, page2_id):
     page1 = Page.get(page1_id)
     page2 = Page.get(page2_id)
     return render_template('page.html', pages=[page1, page2])
 
 
-@route('/page/<int:page_id>/delete', methods=['POST'])
+@srg.route('/page/<int:page_id>/delete', methods=['POST'])
 def delete_page(page_id):
     Page.delete(page_id)
     return redirect(url_for('get_page_list'))
 
 
-@route('/page/<int:page_id>', methods=['POST'])
+@srg.route('/page/<int:page_id>', methods=['POST'])
 def new_idea(page_id):
     content = request.form['content'].strip()
     Idea.new(page_id, content)
     return redirect(url_for('get_page', page_id=page_id))
 
 
-@route('/', methods=['GET'])
+@srg.route('/', methods=['GET'])
 def home():
     return redirect(url_for('get_page_list'))
 
 
 def create_app(uri):
     app = Exlobe(__name__, uri)
-    route.addon(app)
+    srg.incarnate(app)
     return app
 
 
