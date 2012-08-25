@@ -7,32 +7,52 @@ import sys
 
 from flask import Flask, redirect, render_template, request, url_for
 
-from .primitives import Idea, Page
+from .primitives import init_db, Idea, Page
 
 
-app = Flask(__name__)
+class Exlobe(Flask):
+    def __init__(self, name, uri):
+        super(Exlobe, self).__init__(name)
+        self.db_engine = init_db(uri, echo=True)
 
 
-@app.route('/page', methods=['GET'])
+class Router(object):
+    def __init__(self):
+        self.route = []
+
+    def __call__(self, url, **kwargs):
+        def append(f):
+            self.route.append((url, kwargs, f))
+            return f
+        return append
+
+    def addon(self, app):
+        for url, kwargs, f in self.route:
+            app.route(url, **kwargs)(f)
+
+route = Router()
+
+
+@route('/page', methods=['GET'])
 def get_page_list():
     pages = Page.list()
     return render_template('page_list.html', pages=pages)
 
 
-@app.route('/page', methods=['POST'])
+@route('/page', methods=['POST'])
 def new_page():
     page = Page.new()
     return redirect(url_for('get_page', page_id=page.id))
 
 
-@app.route('/page/<int:page_id>/title', methods=['POST'])
+@route('/page/<int:page_id>/title', methods=['POST'])
 def page_title(page_id):
     title = request.form['title'].strip()
     Page.reset_title(page_id, title)
     return title
 
 
-@app.route('/page/<int:page_id>', methods=['GET'])
+@route('/page/<int:page_id>', methods=['GET'])
 def get_page(page_id):
     page = Page.get(page_id)
     page_list = Page.list()
@@ -40,32 +60,39 @@ def get_page(page_id):
         page_list=page_list)
 
 
-@app.route('/page/<int:page1_id>/<int:page2_id>', methods=['GET'])
+@route('/page/<int:page1_id>/<int:page2_id>', methods=['GET'])
 def get_pages(page1_id, page2_id):
     page1 = Page.get(page1_id)
     page2 = Page.get(page2_id)
     return render_template('page.html', pages=[page1, page2])
 
 
-@app.route('/page/<int:page_id>/delete', methods=['POST'])
+@route('/page/<int:page_id>/delete', methods=['POST'])
 def delete_page(page_id):
     Page.delete(page_id)
     return redirect(url_for('get_page_list'))
 
 
-@app.route('/page/<int:page_id>', methods=['POST'])
+@route('/page/<int:page_id>', methods=['POST'])
 def new_idea(page_id):
     content = request.form['content'].strip()
     Idea.new(page_id, content)
     return redirect(url_for('get_page', page_id=page_id))
 
 
-@app.route('/', methods=['GET'])
+@route('/', methods=['GET'])
 def home():
     return redirect(url_for('get_page_list'))
 
 
+def create_app(uri):
+    app = Exlobe(__name__, uri)
+    route.addon(app)
+    return app
+
+
 def main():
     port = int(sys.argv[1])
+    app = create_app('sqlite:///db.sql')
     app.debug = True
     app.run(port=port)

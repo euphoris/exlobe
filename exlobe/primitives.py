@@ -3,10 +3,11 @@
 
 """
 
+from flask import current_app
 from sqlalchemy import create_engine, Column
 from sqlalchemy.types import Integer, String, TEXT
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import create_session, relationship
 from sqlalchemy.schema import ForeignKey, Table
 
 
@@ -14,8 +15,10 @@ __all__ = ('Idea', 'Page', 'Session')
 
 
 Base = declarative_base()
-engine = create_engine('sqlite:///db.sql', echo=True)
-Session = sessionmaker(bind=engine)
+
+
+def Session(**kwargs):
+    return create_session(bind=current_app.db_engine, **kwargs)
 
 
 association_table = Table('association', Base.metadata,
@@ -53,9 +56,9 @@ class Page(Base):
     @classmethod
     def new(cls):
         session = Session()
-        page = Page(title='(no title)', struct='[]')
-        session.add(page)
-        session.commit()
+        with session.begin():
+            page = Page(title='(no title)', struct='[]')
+            session.add(page)
         return page
 
     @classmethod
@@ -74,12 +77,14 @@ class Page(Base):
     @classmethod
     def reset_title(cls, page_id, title):
         session = Session()
+        session.begin()
         session.query(Page).filter_by(id=page_id).update({'title': title})
         session.commit()
 
     @classmethod
     def delete(cls, page_id):
         session = Session()
+        session.begin()
         page = session.query(Page).filter_by(id=page_id).one()
 
         # delete orphaned ideas
@@ -91,5 +96,7 @@ class Page(Base):
         session.commit()
 
 
-if __name__ == '__main__':
+def init_db(uri, **kwargs):
+    engine = create_engine(uri, **kwargs)
     Base.metadata.create_all(engine)
+    return engine
