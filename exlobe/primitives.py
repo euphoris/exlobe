@@ -50,12 +50,16 @@ class Idea(Base, Managed):
 
     @classmethod
     def new(cls, page_id, content):
-        session = Session(autocommit=True)
+        session = Session()
         with session.begin():
             page = Page.get(page_id, session)
             idea = Idea(content=content, reference_count=1)
             session.add(idea)
             page.ideas.append(idea)
+
+        with session.begin():
+            page.struct = '{} {}'.format(idea.id, page.struct)
+            session.merge(page)
 
 
 class Page(Base, Managed):
