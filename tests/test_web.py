@@ -18,7 +18,7 @@ class TestBase(object):
         self.ctx.push()
 
     def teardown_method(self, method):
-        self.ctx.pop()  
+        self.ctx.pop()
         self.f.close()
 
     def get(self, view_func, **kwargs):
@@ -41,7 +41,7 @@ class TestGet(TestBase):
 
     def test_get_page_list(self):
         rv = self.get('get_page_list')
-        assert rv.status_code == HTTP_OK 
+        assert rv.status_code == HTTP_OK
 
     def test_new_page(self):
         before = Page.count()
@@ -76,11 +76,11 @@ class TestGet(TestBase):
 
     def test_get_page(self):
         rv = self.get('get_page', page_id=1)
-        assert rv.status_code == HTTP_OK 
+        assert rv.status_code == HTTP_OK
 
     def test_get_pages(self):
         rv = self.get('get_pages', page1_id=1, page2_id=2)
-        assert rv.status_code == HTTP_OK 
+        assert rv.status_code == HTTP_OK
 
     def test_new_idea(self):
         content = 'hello world'
