@@ -18,8 +18,22 @@ $(function(){
     });
 
     $('a.remove').live('click', function(){
-        li1 = $(this).parents('li');
+        var _document = $(this).parents('.document');
+        var url = _document.find('form.remove-idea').attr('action');
+        var ol = _document.children('ol.idea-list');
+
+        var li1 = $(this).parentsUntil('ol', 'li');
+        var idea_id = $(li1).attr('id');
         $(li1).remove();
+
+        var struct = getTree(ol);
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {idea_id: idea_id, struct: struct},
+        })
+
         return false;
     });
 

@@ -7,13 +7,13 @@ import sys
 
 from flask import Flask, redirect, render_template, request, url_for
 
-from .primitives import init_db, Idea, Page
+from .primitives import init_db, Idea, Page, Session
 
 
 class Exlobe(Flask):
-    def __init__(self, name, uri):
+    def __init__(self, name, uri, echo):
         super(Exlobe, self).__init__(name)
-        self.db_engine = init_db(uri, echo=True)
+        self.db_engine = init_db(uri, echo=echo)
 
 
 class Surrogate(object):
@@ -138,13 +138,37 @@ def new_idea(page_id):
     return redirect(url_for('get_page', page_id=page_id))
 
 
+@srg.route('/page/<int:page_id>/remove', methods=['POST'])
+def remove_idea(page_id):
+    idea_id = int(request.form['idea_id'])
+    struct = request.form['struct'].strip()
+
+    session = Session()
+    with session.begin():
+
+        page = session.query(Page).filter_by(id=page_id).one()
+        idea = session.query(Idea).filter_by(id=idea_id).one()
+        page.ideas.remove(idea)
+
+        if idea.reference_count <= 1:
+            session.delete(idea)
+        else:
+            idea.reference_count -= 1
+            session.merge(idea)
+
+    if valid_tree(struct):
+        Page.update(page_id, dict(struct=struct))
+
+    return ''
+
+
 @srg.route('/', methods=['GET'])
 def home():
     return redirect(url_for('get_page_list'))
 
 
-def create_app(uri):
-    app = Exlobe(__name__, uri)
+def create_app(uri, echo=True):
+    app = Exlobe(__name__, uri, echo)
     srg.incarnate(app)
     return app
 

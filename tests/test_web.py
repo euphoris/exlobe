@@ -12,7 +12,7 @@ class TestBase(object):
     def setup_method(self, method):
         self.f = NamedTemporaryFile()
         uri = 'sqlite:///' + self.f.name
-        self.app = create_app(uri)
+        self.app = create_app(uri, echo=False)
         self.client = self.app.test_client()
         self.ctx = self.app.test_request_context()
         self.ctx.push()
@@ -38,6 +38,7 @@ class TestGet(TestBase):
         super(TestGet, self).setup_method(method)
         Page.new()
         Page.new()
+        Idea.new(1, 'hello')
 
     def test_get_page_list(self):
         rv = self.get('get_page_list')
@@ -84,9 +85,20 @@ class TestGet(TestBase):
 
     def test_new_idea(self):
         content = 'hello world'
+        before = Idea.count()
         rv = self.post('new_idea', page_id=1, data=dict(content=content))
+        after = Idea.count()
         assert rv.status_code == HTTP_REDIRECT
-        assert Idea.count() == 1
+        assert before + 1 == after
+
+    def test_remove_idea(self):
+        before = Idea.count()
+        rv = self.post('remove_idea', page_id=1,
+            data=dict(idea_id='1', struct=''))
+        after = Idea.count()
+
+        assert rv.status_code == HTTP_OK
+        assert before - 1 == after
 
     def test_home(self):
         rv = self.get('home')
