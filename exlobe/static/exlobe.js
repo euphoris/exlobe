@@ -19,6 +19,60 @@ $(function(){
         return false;
     }
 
+    // sort/copy/move ideas
+    var overCount = 0, copiedItem, parentItem = [], prevItem = [];
+
+    function moveStart(e, ui){}
+
+    function moveOver(e, ui){}
+
+    function moveReceive(e, ui){}
+
+    function copyStart(e, ui){
+        overCount = 0;
+        parentItem = ui.item.parent('ol');
+        prevItem = ui.item.prev('li');
+
+        copiedItem = ui.item.clone();
+        copiedItem.addClass('copied');
+        copiedItem.attr('style','');
+        copiedItem.find('.idea-menu').children().hide();
+    }
+
+    function copyOver(e, ui){
+        overCount++;
+        if( overCount % 2 == 0 ){
+            $('.copied').remove();
+        } else {
+            if( prevItem.length > 0 ){
+                prevItem.after(copiedItem);
+            } else {
+                parentItem.prepend(copiedItem);
+            }
+        }
+    }
+
+    function copyReceive(e, ui){
+        $('.copied').removeClass('copied');
+    }
+
+    var startFunc = moveStart, overFunc = moveOver, receiveFunc = moveReceive;
+
+    $('#mode').buttonset();
+
+    $('#move-mode').click(function(){
+        overCount = 0, copiedItem, parentItem = [], prevItem = [];
+        startFunc = moveStart;
+        overFunc = moveOver;
+        receiveFunc = moveReceive;
+    });
+
+    $('#copy-mode').click(function(){
+        startFunc = copyStart;
+        overFunc = copyOver;
+        receiveFunc = copyReceive;
+    });
+
     $('.idea-list').nestedSortable({
         connectWith: ".idea-list",
         handle: 'div.handle',
@@ -27,7 +81,10 @@ $(function(){
         update: function(){
             var _document = $(this).parents('.document');
             savePage(this);
-        }
+        },
+        start: function(e, ui){ startFunc(e, ui) },
+        over: function(e,ui){ overFunc(e, ui) },
+        receive: function(e,ui){ receiveFunc(e, ui) }
 
     }).disableSelection();
 

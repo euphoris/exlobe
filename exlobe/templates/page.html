@@ -17,6 +17,17 @@
     </form>
 </div>
 
+{% if pages|length > 1 %}
+<form>
+<div id="mode">
+    <input type="radio" name="mode" id="move-mode" value="move" checked/>
+    <label for="radio1">Move</label>
+    <input type="radio" name="mode" id="copy-mode" value="copy"/>
+    <label for="radio1">Copy</label>
+</div>
+</form>
+{% endif %}
+
 {% for page in pages %}
 <div class="document">
     <span class="title">
