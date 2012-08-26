@@ -2,7 +2,7 @@ from tempfile import NamedTemporaryFile
 
 from flask import url_for
 
-from exlobe.primitives import Idea, Page
+from exlobe.primitives import Idea, Page, Session
 from exlobe.web import create_app, valid_tree
 
 HTTP_OK = 200
@@ -92,13 +92,30 @@ class TestGet(TestBase):
         assert before + 1 == after
 
     def test_remove_idea(self):
-        before = Idea.count()
         rv = self.post('remove_idea', page_id=1,
             data=dict(idea_id='1', struct=''))
-        after = Idea.count()
 
         assert rv.status_code == HTTP_OK
-        assert before - 1 == after
+        assert Idea.get(1).reference_count == 0
+
+    def test_list_garbage(self):
+        rv = self.get('list_garbage')
+        assert rv.status_code == HTTP_OK
+
+    def test_clear_garbage(self):
+        session = Session()
+        with session.begin():
+            idea = Idea(content='', reference_count=0)
+            session.add(idea)
+        count = session.query(Idea).filter_by(reference_count=0).count()
+        assert count > 0
+
+        rv = self.post('clear_garbage')
+        assert rv.status_code == HTTP_REDIRECT
+
+        session = Session()
+        count = session.query(Idea).filter_by(reference_count=0).count()
+        assert count == 0
 
     def test_home(self):
         rv = self.get('home')

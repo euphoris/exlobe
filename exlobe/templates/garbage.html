@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <form method="POST">
+        <button>Clear garbages</button>
+    </form>
+
+    <ol class="idea-list">
+    {% for idea in ideas %}
+    <li><div class="idea">{{idea.content}}</div></li>
+    {% endfor %}
+    </ol>
+{% endblock %}

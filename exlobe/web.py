@@ -150,16 +150,28 @@ def remove_idea(page_id):
         idea = session.query(Idea).filter_by(id=idea_id).one()
         page.ideas.remove(idea)
 
-        if idea.reference_count <= 1:
-            session.delete(idea)
-        else:
-            idea.reference_count -= 1
-            session.merge(idea)
+        idea.reference_count -= 1
+        session.merge(idea)
 
     if valid_tree(struct):
         Page.update(page_id, dict(struct=struct))
 
     return ''
+
+
+@srg.route('/garbage')
+def list_garbage():
+    session = Session()
+    ideas = session.query(Idea).filter_by(reference_count=0)
+    return render_template('garbage.html', ideas=ideas)
+
+
+@srg.route('/garbage', methods=['POST'])
+def clear_garbage():
+    session = Session()
+    with session.begin():
+        session.query(Idea).filter_by(reference_count=0).delete()
+    return redirect(url_for('get_page_list'))
 
 
 @srg.route('/', methods=['GET'])

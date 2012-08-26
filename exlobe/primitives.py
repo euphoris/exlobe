@@ -29,6 +29,12 @@ association_table = Table('association', Base.metadata,
 
 class Managed(object):
     @classmethod
+    def get(cls, id):
+        session = Session()
+        item = session.query(cls).filter_by(id=id).one()
+        return item
+
+    @classmethod
     def count(cls):
         session = Session()
         return session.query(cls).count()
@@ -52,7 +58,7 @@ class Idea(Base, Managed):
     def new(cls, page_id, content):
         session = Session()
         with session.begin():
-            page = Page.get(page_id, session)
+            page = Page.get(page_id)
             idea = Idea(content=content, reference_count=1)
             session.add(idea)
             page.ideas.append(idea)
@@ -80,9 +86,8 @@ class Page(Base, Managed):
         return page
 
     @classmethod
-    def get(cls, page_id, session=None):
-        if not session:
-            session = Session()
+    def get(cls, page_id):
+        session = Session()
         page = session.query(Page).filter_by(id=page_id).one()
         page.ideas
         return page
@@ -98,10 +103,9 @@ class Page(Base, Managed):
         session.begin()
         page = session.query(Page).filter_by(id=page_id).one()
 
-        # delete orphaned ideas
         for idea in page.ideas:
-            if idea.reference_count <= 1:
-                session.delete(idea)
+            idea.reference_count -= 1
+            session.merge(idea)
 
         session.delete(page)
         session.commit()
