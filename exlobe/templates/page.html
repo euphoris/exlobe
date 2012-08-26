@@ -3,15 +3,15 @@
 {% block body %}
 <div id="menu-skeleton" style="display: none">
     <div class="idea-menu">
-        <a class="copy" href="#">c</a><br>
-        <a class="remove" href="#">x</a><br>
-        <a class="edit" href="#">e</a>
+        <a class="copy" href="#">copy</a>
+        <a class="edit" href="#">edit</a>
+        <a class="remove" href="#">remove</a>
     </div>
 </div>
 
 <div id="edit-skeleton" style="display: none">
     <form class="edit-idea" method="POST" action="/idea/">
-        <textarea name="content"></textarea>
+        <textarea  class="edit-area" name="content"></textarea>
         <button>Edit idea</button>
         <a href="#" class="close-form">close</a>
     </form>
@@ -42,7 +42,7 @@
 
     <form class="new-idea" method="POST"
         action="{{ url_for('new_idea', page_id=page.id) }}">
-        <textarea name="content" class="idea"></textarea>
+        <textarea name="content" class="new-area"></textarea>
         <button>New idea</button>
     </form>
 

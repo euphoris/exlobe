@@ -12,15 +12,30 @@ form.edit-idea{
     margin: 0px;
     padding: 0px;
     width: 258px;
-    height: 75px;
-    float: left;
-    z-index: 5;
+    min-height: 75px;
 }
 
-form.edit-idea textarea {
-    width: 100% !important;
-    margin: 0px;
+textarea.new-area {
+    width: 260px !important;
+    min-height: 75px;
+    margin: -1px;
+    padding: 0px;
+    font-size: 14px;
+    line-height: 18px;
+    border: lightgray 1px solid;
+    font-family: "Helvetica Neue",Arial,sans-serif;
+}
+
+textarea.edit-area {
+    width: 260px !important;
+    min-height: 75px;
+    margin: -1px;
+    padding: 0px;
+    font-size: 14px;
+    line-height: 18px;
     border: none;
+    border-bottom: lightgray 1px solid;
+    font-family: "Helvetica Neue",Arial,sans-serif;
 }
 
 .title span {
@@ -32,21 +47,41 @@ form.edit-idea textarea {
     border: lightgray 1px solid;
 }
 
+.handle {
+    width: 260px;
+    height: 20px;
+    background-color: lightgray;
+    margin: -1px;
+}
+
 .idea {
     width: 258px;
-    min-height: 75px;
-    font-size: 14px;
-    line-height: 18px;
     border: 1px solid;
     background-color: white;
     margin: 5px;
     padding: 1px;
+}
+
+span.content {
+    font-size: 14px;
+    line-height: 18px;
+    display: block;
+    min-height: 75px;
     font-family: "Helvetica Neue",Arial,sans-serif;
 }
 
 div.idea-menu {
     padding: 0px;
     margin: 0px;
+    height: 20px;
+    padding-bottom: 3px;
+}
+
+div.idea-menu a {
+    display: none;
+}
+
+a.remove {
     float: right;
 }
 

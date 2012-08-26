@@ -5,6 +5,14 @@ $(function(){
 
     $('div.idea').each(appendMenu);
 
+    $('div.idea').live('mouseover', function(){
+        $(this).find('.idea-menu').children().show();
+    });
+
+    $('div.idea').live('mouseout', function(){
+        $(this).find('.idea-menu').children().hide();
+    });
+
     function savePage(trigger){
         var _document = $(trigger).parents('.document');
         _document.children('form.save-page').submit();
@@ -13,7 +21,7 @@ $(function(){
 
     $('.idea-list').nestedSortable({
         connectWith: ".idea-list",
-        handle: 'div',
+        handle: 'div.handle',
         items: 'li',
         toleranceElement: '> div',
         update: function(){
@@ -44,7 +52,9 @@ $(function(){
         var li = $(this).parentsUntil('ol', 'li'),
             div = li.children('.idea'),
             text = div.children('.content').text();
-        div.children().hide()
+
+        div.children('.content').hide()
+        div.children('.idea-menu').hide()
 
         var form = $('#edit-skeleton').children('form').clone();
         div.append(form);
