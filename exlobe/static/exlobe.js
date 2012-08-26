@@ -79,11 +79,10 @@ $(function(){
             url: $(this).attr('action'),
             type: 'POST',
             data: {content: content},
-            dataType: 'json',
+            dataType: 'html',
             success: function(data){
                 ol = _document.children('ol.idea-list');
-                var item = $('<li id="' + data + '">'
-                    + '<div class="idea">'+content+'</div></li>');
+                var item = $(data);
                 item.find('.idea').each(appendMenu);
                 ol.prepend(item);
             }

@@ -125,7 +125,13 @@ def save_page(page_id):
 
     return 'ok'
 
-
+idea_format = u"""
+    <li id="{}">
+        <div class="idea">
+            <span class="content">{}</span>
+        </div>
+    </li>
+"""
 @srg.template_filter('render_page')
 def render_page(page):
     ideas = {}
@@ -142,8 +148,7 @@ def render_page(page):
         else:
             i = int(s)
             try:
-                tree += u'<li id="{}"><div class="idea">{}</div>'\
-                    .format(i, ideas[i])
+                tree += idea_format.format(i, ideas[i])
             except KeyError:
                 pass
     return tree
@@ -174,7 +179,7 @@ def delete_page(page_id):
 def new_idea(page_id):
     content = request.form['content'].strip()
     idea_id = Idea.new(page_id, content)
-    return repr(idea_id)
+    return idea_format.format(idea_id, content)
 
 
 @srg.route('/garbage')
