@@ -182,6 +182,13 @@ def new_idea(page_id):
     return idea_format.format(idea_id, content)
 
 
+@srg.route('/idea/<int:idea_id>', methods=['POST'])
+def edit_idea(idea_id):
+    content = request.form['content'].strip()
+    Idea.update(idea_id, dict(content=content))
+    return 'ok'
+
+
 @srg.route('/garbage')
 def list_garbage():
     session = Session()

@@ -4,8 +4,17 @@
 <div id="menu-skeleton" style="display: none">
     <div class="idea-menu">
         <a class="copy" href="#">c</a><br>
-        <a class="remove" href="#">x</a>
+        <a class="remove" href="#">x</a><br>
+        <a class="edit" href="#">e</a>
     </div>
+</div>
+
+<div id="edit-skeleton" style="display: none">
+    <form class="edit-idea" method="POST" action="/idea/">
+        <textarea name="content"></textarea>
+        <button>Edit idea</button>
+        <a href="#" class="close-form">close</a>
+    </form>
 </div>
 
 {% for page in pages %}

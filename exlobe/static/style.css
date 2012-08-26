@@ -6,6 +6,23 @@ form.page-title {
     display: none;
 }
 
+form.edit-idea{
+    display: block;
+    background-color: white;
+    margin: 0px;
+    padding: 0px;
+    width: 258px;
+    height: 75px;
+    float: left;
+    z-index: 5;
+}
+
+form.edit-idea textarea {
+    width: 100% !important;
+    margin: 0px;
+    border: none;
+}
+
 .title span {
     font-size: 20px;
 }
@@ -17,7 +34,7 @@ form.page-title {
 
 .idea {
     width: 258px;
-    height: 75px;
+    min-height: 75px;
     font-size: 14px;
     line-height: 18px;
     border: 1px solid;

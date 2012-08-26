@@ -104,6 +104,15 @@ class TestGet(TestBase):
         assert rv.status_code == HTTP_OK
         assert before + 1 == after
 
+    def test_edit_idea(self):
+        content = 'world!'
+        rv = self.post('edit_idea', idea_id=1, data=dict(content=content))
+        assert rv.status_code == HTTP_OK
+
+        session = Session()
+        assert session.query(Idea).get(1).content == content
+
+
     def test_remove_idea(self):
         rv = self.post('save_page', page_id=1, data=dict(struct=''))
 
