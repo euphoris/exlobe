@@ -173,8 +173,8 @@ def delete_page(page_id):
 @srg.route('/page/<int:page_id>', methods=['POST'])
 def new_idea(page_id):
     content = request.form['content'].strip()
-    Idea.new(page_id, content)
-    return redirect(url_for('get_page', page_id=page_id))
+    idea_id = Idea.new(page_id, content)
+    return repr(idea_id)
 
 
 @srg.route('/garbage')

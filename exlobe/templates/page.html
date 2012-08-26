@@ -31,7 +31,7 @@
         <button>save</button>
     </form>
 
-    <form id="new-idea" method="POST"
+    <form class="new-idea" method="POST"
         action="{{ url_for('new_idea', page_id=page.id) }}">
         <textarea name="content" class="idea"></textarea>
         <button>New idea</button>

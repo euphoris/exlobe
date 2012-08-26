@@ -1,7 +1,9 @@
 $(function(){
-    $('.idea').each(function(){
-        $($('#menu-skeleton').html()).appendTo(this);
-    });
+    function appendMenu(i, div){
+        $($('#menu-skeleton').html()).appendTo(div);
+    }
+
+    $('div.idea').each(appendMenu);
 
     function savePage(trigger){
         var _document = $(trigger).parents('.document');
@@ -64,6 +66,27 @@ $(function(){
             url: $(this).attr('action'),
             type: 'POST',
             data: {struct: struct},
+        })
+        return false;
+    });
+
+    $('form.new-idea').submit(function(){
+        var textarea = $(this).children('textarea[name=content]');
+        var content = textarea.val();
+        textarea.val('');
+        var _document = $(this).parents('.document');
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: {content: content},
+            dataType: 'json',
+            success: function(data){
+                ol = _document.children('ol.idea-list');
+                var item = $('<li id="' + data + '">'
+                    + '<div class="idea">'+content+'</div></li>');
+                item.find('.idea').each(appendMenu);
+                ol.prepend(item);
+            }
         })
         return false;
     });

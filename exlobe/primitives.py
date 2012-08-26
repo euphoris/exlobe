@@ -67,6 +67,8 @@ class Idea(Base, Managed):
             page.struct = '{} {}'.format(idea.id, page.struct)
             session.merge(page)
 
+        return idea.id
+
 
 class Page(Base, Managed):
     __tablename__ = 'page'

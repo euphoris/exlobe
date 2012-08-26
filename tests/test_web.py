@@ -101,7 +101,7 @@ class TestGet(TestBase):
         before = Idea.count()
         rv = self.post('new_idea', page_id=1, data=dict(content=content))
         after = Idea.count()
-        assert rv.status_code == HTTP_REDIRECT
+        assert rv.status_code == HTTP_OK
         assert before + 1 == after
 
     def test_remove_idea(self):
