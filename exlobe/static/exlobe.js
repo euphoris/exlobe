@@ -3,11 +3,22 @@ $(function(){
         $($('#menu-skeleton').html()).appendTo(this);
     });
 
+    function savePage(trigger){
+        var _document = $(trigger).parents('.document');
+        _document.children('form.save-page').submit();
+        return false;
+    }
+
     $('.idea-list').nestedSortable({
         connectWith: ".idea-list",
         handle: 'div',
         items: 'li',
-        toleranceElement: '> div'
+        toleranceElement: '> div',
+        update: function(){
+            var _document = $(this).parents('.document');
+            savePage(this);
+        }
+
     }).disableSelection();
 
     $('a.copy').live('click', function(){
@@ -15,7 +26,7 @@ $(function(){
         li2 = li1.clone();
         li1.after(li2);
 
-        return $('form.save-page').submit()
+        return savePage(this);
     });
 
     $('a.remove').live('click', function(){
@@ -23,7 +34,8 @@ $(function(){
         var li1 = $(this).parentsUntil('ol', 'li');
         $(li1).remove();
 
-        return $('form.save-page').submit()
+        _document.children('form.save-page').submit();
+        return false;
     });
 
     $('a.change-title').live('click', function(){
