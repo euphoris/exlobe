@@ -105,8 +105,7 @@ class TestGet(TestBase):
         assert before + 1 == after
 
     def test_remove_idea(self):
-        rv = self.post('remove_idea', page_id=1,
-            data=dict(idea_id='1', struct=''))
+        rv = self.post('save_page', page_id=1, data=dict(struct=''))
 
         assert rv.status_code == HTTP_OK
         assert Idea.get(1).reference_count == 0

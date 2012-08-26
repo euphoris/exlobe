@@ -65,6 +65,10 @@ def page_title(page_id):
 
 def valid_tree(struct):
     depth = 0
+
+    if struct.strip() == '':
+        return True
+
     struct = struct.strip().split(' ')
     for s in struct:
         if s == '[':
