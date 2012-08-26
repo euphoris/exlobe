@@ -11,30 +11,19 @@ $(function(){
     }).disableSelection();
 
     $('a.copy').live('click', function(){
-        li1 = $(this).parents('li');
+        li1 = $(this).parentsUntil('ol', 'li');
         li2 = li1.clone();
         li1.after(li2);
-        return false;
+
+        return $('form.save-page').submit()
     });
 
     $('a.remove').live('click', function(){
         var _document = $(this).parents('.document');
-        var url = _document.find('form.remove-idea').attr('action');
-        var ol = _document.children('ol.idea-list');
-
         var li1 = $(this).parentsUntil('ol', 'li');
-        var idea_id = $(li1).attr('id');
         $(li1).remove();
 
-        var struct = getTree(ol);
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {idea_id: idea_id, struct: struct},
-        })
-
-        return false;
+        return $('form.save-page').submit()
     });
 
     $('a.change-title').live('click', function(){

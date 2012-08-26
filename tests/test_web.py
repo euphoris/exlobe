@@ -3,7 +3,7 @@ from tempfile import NamedTemporaryFile
 from flask import url_for
 
 from exlobe.primitives import Idea, Page, Session
-from exlobe.web import create_app, valid_tree
+from exlobe.web import create_app, struct_to_set, valid_tree
 
 HTTP_OK = 200
 HTTP_REDIRECT = 302
@@ -39,6 +39,9 @@ class TestGet(TestBase):
         Page.new()
         Page.new()
         Idea.new(1, 'hello')
+        Idea.new(2, 'hello')
+        Idea.new(2, 'hello')
+        Idea.new(2, 'hello')
 
     def test_get_page_list(self):
         rv = self.get('get_page_list')
@@ -60,13 +63,23 @@ class TestGet(TestBase):
         assert Page.get(1).title == title
 
     def test_save_page(self):
-        struct = '1 [ 2 ] 3 [ 4 [ 5 6 ] ]'
+        page = Page.get(1)
+        assert page.struct == '1 '
+        assert struct_to_set(page.struct) == set([1])
+
+        struct = '2 [ 3 [ 4 ] ] '
         rv = self.post('save_page', data=dict(struct=struct), page_id=1)
         assert rv.status_code == HTTP_OK
+
+        assert struct_to_set(struct) == set([2,3,4])
         assert Page.get(1).struct == struct
 
+        session = Session()
+        assert session.query(Idea).get(1).reference_count == 0
+        assert session.query(Idea).get(2).reference_count == 2
+
         # malformed
-        rv = self.post('save_page', data=dict(struct=struct[:-1]), page_id=1)
+        rv = self.post('save_page', data=dict(struct=struct[:-2]), page_id=1)
         assert rv.status_code == HTTP_OK
         assert Page.get(1).struct == struct
 

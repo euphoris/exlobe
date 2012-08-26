@@ -26,10 +26,6 @@
         <button>delete this page</button>
     </form>
 
-    <form class="remove-idea" method="POST"
-        action="{{url_for('remove_idea', page_id=page.id)}}">
-    </form>
-
     <form class="save-page" method="POST"
         action="{{url_for('save_page', page_id=page.id)}}">
         <button>save</button>

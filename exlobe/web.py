@@ -79,11 +79,46 @@ def valid_tree(struct):
     return depth == 0
 
 
+def struct_to_set(struct):
+    s = set()
+
+    ideas = struct.strip().split(' ')
+    for idea_id in ideas:
+        if idea_id not in '[]':
+            s.add(int(idea_id))
+
+    return s
+
+
 @srg.route('/page/<int:page_id>/save', methods=['POST'])
 def save_page(page_id):
     struct = request.form['struct']
     if valid_tree(struct):
-        Page.update(page_id, dict(struct=struct))
+
+        session = Session()
+        with session.begin():
+            page = session.query(Page).get(page_id)
+
+            page_set = struct_to_set(page.struct)
+            new_set = struct_to_set(struct)
+
+            removed = page_set - new_set
+            for idea_id in removed:
+                idea = session.query(Idea).get(idea_id)
+                page.ideas.remove(idea)
+                idea.reference_count -= 1
+                session.merge(idea)
+
+            appended = new_set - page_set
+            for idea_id in appended:
+                idea = session.query(Idea).get(idea_id)
+                page.ideas.append(idea)
+                idea.reference_count += 1
+                session.merge(idea)
+
+            page.struct = struct
+            session.merge(page)
+
     return 'ok'
 
 
@@ -136,27 +171,6 @@ def new_idea(page_id):
     content = request.form['content'].strip()
     Idea.new(page_id, content)
     return redirect(url_for('get_page', page_id=page_id))
-
-
-@srg.route('/page/<int:page_id>/remove', methods=['POST'])
-def remove_idea(page_id):
-    idea_id = int(request.form['idea_id'])
-    struct = request.form['struct'].strip()
-
-    session = Session()
-    with session.begin():
-
-        page = session.query(Page).filter_by(id=page_id).one()
-        idea = session.query(Idea).filter_by(id=idea_id).one()
-        page.ideas.remove(idea)
-
-        idea.reference_count -= 1
-        session.merge(idea)
-
-    if valid_tree(struct):
-        Page.update(page_id, dict(struct=struct))
-
-    return ''
 
 
 @srg.route('/garbage')
