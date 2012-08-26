@@ -43,7 +43,7 @@ class Managed(object):
     def update(cls, id, data):
         session = Session()
         session.begin()
-        session.query(Page).filter_by(id=id).update(data)
+        session.query(cls).filter_by(id=id).update(data)
         session.commit()
 
 
