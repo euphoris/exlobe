@@ -49,10 +49,13 @@ textarea.edit-area {
 
 .idea {
     width: 258px;
-    border: 1px solid;
+    border: lightgray 1px solid;
     background-color: white;
     margin: 5px;
     padding: 1px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 
 .content {
