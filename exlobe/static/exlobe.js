@@ -5,14 +5,6 @@ $(function(){
 
     $('div.idea').each(appendMenu);
 
-    $('div.idea').live('mouseover', function(){
-        $(this).find('.idea-menu').show();
-    });
-
-    $('div.idea').live('mouseout', function(){
-        $(this).find('.idea-menu').hide();
-    });
-
     function savePage(trigger){
         var _document = $(trigger).parents('.document');
         _document.children('form.save-page').submit();
@@ -87,6 +79,10 @@ $(function(){
         receive: function(e,ui){ receiveFunc(e, ui) }
 
     }).disableSelection();
+
+    $('.idea').live('click', function(){
+        $(this).children('.idea-menu').slideToggle(50);
+    });
 
     $('a.copy').live('click', function(){
         li1 = $(this).parentsUntil('ol', 'li');
