@@ -41,10 +41,11 @@
         <button>change the title</button>
     </form>
 
-    <form method="POST" style="float: right"
-        action="{{url_for('delete_page', page_id=page.id)}}">
-        <button>delete this page</button>
-    </form>
+    <a href="{% if pages|length == 1 -%}
+        {{ url_for('get_page_list') }}
+    {%- else -%}
+        {{ url_for('get_page', page_id=pages[2-loop.index].id) }}
+    {%- endif %}" style="float: right">X</a>
 
     <form class="save-page" method="POST" style="display: none"
         action="{{url_for('save_page', page_id=page.id)}}">
@@ -60,6 +61,11 @@
     <ol class="idea-list">
         {{page|render_page|safe}}
     </ol>
+
+    <form method="POST" style="float: right"
+        action="{{url_for('delete_page', page_id=page.id)}}">
+        <button>delete this page</button>
+    </form>
 </div>
 {% endfor %}
 
