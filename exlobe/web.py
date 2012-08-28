@@ -3,6 +3,7 @@
 
 """
 
+import os
 import sys
 
 from flask import Flask, redirect, render_template, request, url_for
@@ -218,6 +219,7 @@ def create_app(uri, echo=True):
 
 def main():
     port = int(sys.argv[1])
-    app = create_app('sqlite:///db.sql')
+    db = os.environ['EXLOBE_DATABASE']
+    app = create_app(db)
     app.debug = True
     app.run(port=port)
