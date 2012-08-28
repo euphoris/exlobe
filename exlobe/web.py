@@ -130,8 +130,7 @@ def save_page(page_id):
 idea_format = u"""
     <li id="{}">
         <div class="idea">
-            <div class="handle"></div>
-            <span class="content">{}</span>
+            <div class="content">{}</div>
         </div>
 """
 @srg.template_filter('render_page')

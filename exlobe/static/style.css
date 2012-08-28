@@ -47,13 +47,6 @@ textarea.edit-area {
     border: lightgray 1px solid;
 }
 
-.handle {
-    width: 260px;
-    height: 20px;
-    background-color: lightgray;
-    margin: -1px;
-}
-
 .idea {
     width: 258px;
     border: 1px solid;
@@ -62,11 +55,11 @@ textarea.edit-area {
     padding: 1px;
 }
 
-span.content {
+.content {
     font-size: 14px;
     line-height: 18px;
     display: block;
-    min-height: 75px;
+    cursor: default;
     font-family: "Helvetica Neue",Arial,sans-serif;
 }
 

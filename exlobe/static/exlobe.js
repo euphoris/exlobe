@@ -75,7 +75,7 @@ $(function(){
 
     $('.idea-list').nestedSortable({
         connectWith: ".idea-list",
-        handle: 'div.handle',
+        handle: '.content',
         items: 'li',
         toleranceElement: '> div',
         update: function(){
