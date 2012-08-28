@@ -80,8 +80,8 @@ $(function(){
 
     }).disableSelection();
 
-    $('.idea').live('click', function(){
-        $(this).children('.idea-menu').slideToggle(50);
+    $('.content').live('click', function(){
+        $(this).siblings('.idea-menu').slideToggle(50);
     });
 
     $('a.copy').live('click', function(){
