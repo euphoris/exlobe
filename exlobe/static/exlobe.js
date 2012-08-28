@@ -67,7 +67,10 @@ $(function(){
 
     $('.idea-list').nestedSortable({
         connectWith: ".idea-list",
+        tolerance: 'pointer',
         handle: '.content',
+        placeholder: 'placeholder',
+        forcePlaceholderSize: true,
         items: 'li',
         toleranceElement: '> div',
         update: function(){

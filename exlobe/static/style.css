@@ -77,6 +77,13 @@ a.remove {
     float: right;
 }
 
+.placeholder {
+    border: 1px dashed #4183C4;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
 ol.idea-list {
     width: 500px;
     min-height: 50%;
