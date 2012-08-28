@@ -191,7 +191,7 @@ $(function(){
             type: 'POST',
             data: {content: content},
             success: function(data){
-                $('li#'+idea_id).find('span.content').text(content);
+                $('li#'+idea_id+'>.idea>.content').text(content);
                 form.children('a.close-form').click();
             }
         });
