@@ -133,7 +133,6 @@ idea_format = u"""
             <div class="handle"></div>
             <span class="content">{}</span>
         </div>
-    </li>
 """
 @srg.template_filter('render_page')
 def render_page(page):
