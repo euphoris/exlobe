@@ -122,7 +122,7 @@ $(function(){
     });
 
     $('a.close-form').live('click', function(){
-        $(this).parents('.idea').children().show();
+        $(this).parent().siblings('.content').show();
         $(this).parent().remove();
         return false;
     });
