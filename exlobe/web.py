@@ -4,6 +4,7 @@
 """
 
 import os
+import re
 import sys
 
 from flask import Flask, redirect, render_template, request, url_for
@@ -60,7 +61,7 @@ def new_page():
 @srg.route('/page/<int:page_id>/title', methods=['POST'])
 def page_title(page_id):
     title = request.form['title'].strip()
-    Page.update(page_id, dict(title=title))
+    Page.update(page_id, title=title)
     return title
 
 
@@ -184,10 +185,38 @@ def new_idea(page_id):
     return idea_format.format(idea_id, content)
 
 
+paragraph_re = re.compile(r'[\r\n][\r\n]+')
+sentence_re = re.compile(r'([^.])[.]\s+')
+
+@srg.route('/page/import', methods=['POST'])
+def import_text():
+    page = Page.new()
+    text = request.form['text']
+
+    struct = ''
+    paragraphs = paragraph_re.split(text)
+
+    for p in paragraphs:
+        p = re.sub(r'\n', '', p).strip()
+        sentences = sentence_re.sub(r'\1.\n', p).split('\n')
+        is_first = True
+        for s in sentences:
+            idea = Idea.new(page.id, s)
+            struct += '{} '.format(idea)
+            if is_first:
+                struct += '[ '
+                is_first = False
+        struct += '] '
+
+    Page.update(page.id, struct=struct)
+
+    return redirect(url_for('get_page', page_id=page.id))
+
+
 @srg.route('/idea/<int:idea_id>', methods=['POST'])
 def edit_idea(idea_id):
     content = request.form['content'].strip()
-    Idea.update(idea_id, dict(content=content))
+    Idea.update(idea_id, content=content)
     return 'ok'
 
 

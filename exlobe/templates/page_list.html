@@ -5,6 +5,11 @@
     <button>New page</button>
 </form>
 
+<form action="{{url_for('import_text')}}" method="POST">
+    <textarea name="text"></textarea>
+    <button>New page</button>
+</form>
+
 <ul>
 {% for page in pages %}
     <li>

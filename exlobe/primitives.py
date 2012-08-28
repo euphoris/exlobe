@@ -40,10 +40,10 @@ class Managed(object):
         return session.query(cls).count()
 
     @classmethod
-    def update(cls, id, data):
+    def update(cls, id, **kwargs):
         session = Session()
         session.begin()
-        session.query(cls).filter_by(id=id).update(data)
+        session.query(cls).filter_by(id=id).update(kwargs)
         session.commit()
 
 

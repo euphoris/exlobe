@@ -104,6 +104,25 @@ class TestGet(TestBase):
         assert rv.status_code == HTTP_OK
         assert before + 1 == after
 
+    def test_import_text(self):
+        text = """
+        the first paragraph. a sentence. ellipsis.. end.
+
+        the second paragraph. another sentence."""
+
+        before_page = Page.count()
+        before_idea = Idea.count()
+
+        rv = self.post('import_text', data=dict(text=text))
+        assert rv.status_code == HTTP_REDIRECT
+
+        after_page = Page.count()
+        after_idea = Idea.count()
+
+        assert before_page + 1 == after_page
+        assert before_idea + 5 == after_idea
+        assert Page.get(after_page).struct == '5 [ 6 7 ] 8 [ 9 ] '
+
     def test_edit_idea(self):
         content = 'world!'
         rv = self.post('edit_idea', idea_id=1, data=dict(content=content))
