@@ -6,11 +6,11 @@ $(function(){
     $('div.idea').each(appendMenu);
 
     $('div.idea').live('mouseover', function(){
-        $(this).find('.idea-menu').children().show();
+        $(this).find('.idea-menu').show();
     });
 
     $('div.idea').live('mouseout', function(){
-        $(this).find('.idea-menu').children().hide();
+        $(this).find('.idea-menu').hide();
     });
 
     function savePage(trigger){
@@ -36,7 +36,7 @@ $(function(){
         copiedItem = ui.item.clone();
         copiedItem.addClass('copied');
         copiedItem.attr('style','');
-        copiedItem.find('.idea-menu').children().hide();
+        copiedItem.find('.idea-menu').hide();
     }
 
     function copyOver(e, ui){
