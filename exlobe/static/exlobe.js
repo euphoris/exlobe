@@ -181,6 +181,14 @@ $(function(){
         return false;
     });
 
+    $('form.new-idea>textarea').keydown(function(e){
+        if( e.keyCode == 13 ){
+            e.preventDefault();
+            $(this).parent('form').submit();
+            $(this).focus();
+        }
+    });
+
     $('form.edit-idea').live('submit', function(){
         var form = $(this),
             idea_id = form.parentsUntil('ol', 'li').attr('id'),
