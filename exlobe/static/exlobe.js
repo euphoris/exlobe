@@ -211,6 +211,33 @@ $(function(){
         }
     });
 
+    $('.append-idea textarea').keydown(function(e){
+        if( e.keyCode == 9){ // TAB
+            e.preventDefault();
+            var li = $(this).parentsUntil('ol','li');
+            if(e.shiftKey){ // SHIFT TAB
+                // dedent
+                var parent_li = li.parent().parentsUntil('ol', 'li');
+                if ( parent_li.length > 0 ){
+                    parent_li.after(li);
+                }
+
+            } else {
+                // indent
+                var prev = li.prev('li');
+                if ( prev.length > 0 ){
+                    var ol = prev.children('ol');
+                    if ( ol.length == 0 ){
+                        ol = $('<ol></ol>');
+                        ol.appendTo(prev);
+                    }
+                    li.appendTo(ol);
+                }
+            }
+            $(this).focus();
+        }
+    });
+
     $('form.edit-idea').live('submit', function(){
         var form = $(this),
             idea_id = form.parentsUntil('ol', 'li').attr('id'),
