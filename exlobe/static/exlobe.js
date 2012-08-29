@@ -199,6 +199,7 @@ $(function(){
                 var item = $(data);
                 item.find('.idea').each(appendMenu);
                 li.before(item);
+                savePage(li);
             }
         })
         return false;
