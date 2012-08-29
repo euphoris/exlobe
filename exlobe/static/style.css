@@ -9,6 +9,7 @@ form.page-title {
 form.edit-idea{
     display: block;
     background-color: white;
+    width: 100% !important;
     margin: 0px;
     padding: 0px;
     width: 258px;
@@ -27,7 +28,7 @@ textarea.new-area {
 }
 
 textarea.edit-area {
-    width: 260px !important;
+    width: 100%;
     min-height: 75px;
     margin: -1px;
     padding: 0px;

@@ -74,6 +74,7 @@ $(function(){
         forcePlaceholderSize: true,
         items: 'li',
         toleranceElement: '> div',
+        distance: 5,
         update: function(){
             var _document = $(this).parents('.document');
             savePage(this);
@@ -84,14 +85,11 @@ $(function(){
 
     }).disableSelection();
 
-    $('.content').live('click', function(){
-        $(this).siblings('.idea-menu').slideToggle(50);
-    });
-
     $('a.copy').live('click', function(){
         li1 = $(this).parentsUntil('ol', 'li');
         li2 = li1.clone();
         li1.after(li2);
+        closeForm(li2.find('form'));
 
         return savePage(this);
     });
@@ -105,7 +103,7 @@ $(function(){
         return false;
     });
 
-    $('a.edit').live('click', function(){
+    $('.content').live('click', function(){
         var li = $(this).parentsUntil('ol', 'li'),
             div = li.children('.idea'),
             text = div.children('.content').text();
@@ -122,14 +120,20 @@ $(function(){
         form.attr('action', action+li.attr('id'));
 
         form.find('textarea').focus();
+        $('html').bind('click.xxx', function(e){
+            console.log(li.has($(e.target)));
+            if( li.has($(e.target)).length == 0 ){
+                closeForm(form);
+            }
+        });
         return false;
     });
 
-    $('a.close-form').live('click', function(){
-        $(this).parent().siblings('.content').show();
-        $(this).parent().remove();
-        return false;
-    });
+    function closeForm(form){
+        $('html').unbind('click.xxx');
+        form.siblings('.content').show();
+        form.remove();
+    }
 
     $('a.change-title').live('click', function(){
         title = $(this).parent('span')
@@ -249,7 +253,7 @@ $(function(){
             data: {content: content},
             success: function(data){
                 $('li#'+idea_id+'>.idea>.content').text(content);
-                form.children('a.close-form').click();
+                closeForm(form);
             }
         });
         return false;
