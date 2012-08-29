@@ -93,9 +93,11 @@ $(function(){
     });
 
     $('a.remove').live('click', function(){
-        var _document = $(this).parents('.document');
-        var li1 = $(this).parentsUntil('ol', 'li');
-        $(li1).remove();
+        var _document = $(this).parents('.document'),
+            li1 = $(this).parentsUntil('ol', 'li'),
+            append = li1.find('li[id=0]');
+        if( append.length > 0 ) li1.before(append);
+        li1.remove();
 
         _document.children('form.save-page').submit();
         return false;
