@@ -4,6 +4,7 @@ $(function(){
     }
 
     $('div.idea').each(appendMenu);
+    $('li[id=0] .idea-menu').remove();
 
     function savePage(trigger){
         var _document = $(trigger).parents('.document');
@@ -140,10 +141,13 @@ $(function(){
     function getTree(ol){
         var struct = ''
         ol.children('li').each(function(){
-            struct += $(this).attr('id') + ' ';
-            var ol = $(this).children('ol');
-            if( ol.length > 0 ){
-                struct += '[ ' + getTree(ol) + '] ';
+            var id = $(this).attr('id');
+            if( id > 0 ){
+                struct += id + ' ';
+                var ol = $(this).children('ol');
+                if( ol.length > 0 ){
+                    struct += '[ ' + getTree(ol) + '] ';
+                }
             }
         });
         return struct
@@ -180,7 +184,26 @@ $(function(){
         return false;
     });
 
-    $('form.new-idea>textarea').keydown(function(e){
+    $('form.append-idea').submit(function(){
+        var li = $(this).parentsUntil('ol', 'li');
+        var textarea = $(this).children('textarea[name=content]');
+        var content = textarea.val();
+        textarea.val('');
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: {content: content},
+            dataType: 'html',
+            success: function(data){
+                var item = $(data);
+                item.find('.idea').each(appendMenu);
+                li.before(item);
+            }
+        })
+        return false;
+    })
+
+    $('.new-area').keydown(function(e){
         if( e.keyCode == 13 ){
             e.preventDefault();
             $(this).parent('form').submit();

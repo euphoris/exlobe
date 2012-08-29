@@ -16,7 +16,7 @@ form.edit-idea{
 }
 
 textarea.new-area {
-    width: 260px !important;
+    width: 100%;
     min-height: 75px;
     margin: -1px;
     padding: 0px;

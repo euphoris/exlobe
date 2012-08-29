@@ -152,6 +152,14 @@ def render_page(page):
                 tree += idea_format.format(i, ideas[i])
             except KeyError:
                 pass
+
+    append_form = '''
+    <form class="append-idea" method="POST"
+        action="{}">
+        <textarea name="content" class="new-area"></textarea>
+    </form>
+    '''.format(url_for('new_idea', page_id=page.id))
+    tree += idea_format.format(0, append_form)
     return tree
 
 
