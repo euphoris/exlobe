@@ -66,14 +66,6 @@ textarea.edit-area {
     font-family: "Helvetica Neue",Arial,sans-serif;
 }
 
-div.idea-menu {
-    padding: 0px;
-    margin: 0px;
-    height: 20px;
-    padding-bottom: 3px;
-    display: none;
-}
-
 a.remove {
     float: right;
 }

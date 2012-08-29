@@ -4,7 +4,6 @@ $(function(){
     }
 
     $('div.idea').each(appendMenu);
-    $('li[id=0] .idea-menu').remove();
 
     function savePage(trigger){
         var _document = $(trigger).parents('.document');
@@ -29,7 +28,6 @@ $(function(){
         copiedItem = ui.item.clone();
         copiedItem.addClass('copied');
         copiedItem.attr('style','');
-        copiedItem.find('.idea-menu').hide();
     }
 
     function copyOver(e, ui){
@@ -109,7 +107,6 @@ $(function(){
             text = div.children('.content').text();
 
         div.children('.content').hide()
-        div.children('.idea-menu').hide()
 
         var form = $('#edit-skeleton').children('form').clone();
         div.append(form);

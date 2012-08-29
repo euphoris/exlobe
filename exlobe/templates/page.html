@@ -1,14 +1,6 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div id="menu-skeleton" style="display: none">
-    <div class="idea-menu">
-        <a class="copy" href="#">copy</a>
-        <a class="edit" href="#">edit</a>
-        <a class="remove" href="#">remove</a>
-    </div>
-</div>
-
 <div id="edit-skeleton" style="display: none">
     <form class="edit-idea" method="POST" action="/idea/">
         <textarea  class="edit-area" name="content"></textarea>
