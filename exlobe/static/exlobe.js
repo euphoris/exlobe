@@ -67,7 +67,7 @@ $(function(){
     $('.idea-list').nestedSortable({
         connectWith: ".idea-list",
         tolerance: 'pointer',
-        handle: '.content',
+        handle: '.idea',
         placeholder: 'placeholder',
         forcePlaceholderSize: true,
         items: 'li',
@@ -90,6 +90,7 @@ $(function(){
         closeForm(li2.find('form'));
 
         return savePage(this);
+
     });
 
     $('a.remove').live('click', function(){
@@ -273,6 +274,34 @@ $(function(){
                 form.hide();
             }
         });
+        return false;
+    });
+
+    function getText(ol){
+        var text = ''
+        ol.children('li').each(function(){
+            var id = $(this).attr('id');
+            if( id > 0 ){
+                if( $(this).parent('.idea-list').length > 0){
+                    text += '<p>'
+                }
+                text += '<span>' + $(this).children('.idea').text() + '</span>';
+                var ol = $(this).children('ol');
+                if( ol.length > 0 ){
+                    text += getText(ol);
+                }
+            }
+        });
+        return text;
+    }
+    $('a.view-text').click(function(){
+        var documents = $('.document'),
+            outline = documents[0],
+            ol = $(outline).find('.idea-list')
+            text = documents[1];
+
+        $(text).html(getText(ol));
+
         return false;
     });
 });
