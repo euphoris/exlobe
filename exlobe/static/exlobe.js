@@ -99,6 +99,8 @@ $(function(){
             li1 = $(this).parentsUntil('ol', 'li'),
             append = li1.find('li[id=0]');
         if( append.length > 0 ) li1.before(append);
+
+        $('.sentence#'+li1.attr('id')).remove();
         li1.remove();
 
         _document.children('form.save-page').submit();
