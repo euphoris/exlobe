@@ -39,6 +39,12 @@ textarea.edit-area {
     font-family: "Helvetica Neue",Arial,sans-serif;
 }
 
+.sentence {
+    font-size: 14px;
+    line-height: 18px;
+    font-family: "Helvetica Neue",Arial,sans-serif;
+}
+
 .title span {
     font-size: 20px;
 }
@@ -93,4 +99,8 @@ div.document {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 10px;
+}
+
+div.text {
+    position: relative;
 }

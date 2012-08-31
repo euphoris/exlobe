@@ -75,6 +75,7 @@ $(function(){
         distance: 5,
         update: function(){
             var _document = $(this).parents('.document');
+            updateText();
             savePage(this);
         },
         start: function(e, ui){ startFunc(e, ui) },
@@ -121,12 +122,33 @@ $(function(){
 
         form.find('textarea').focus();
         $('html').bind('click.xxx', function(e){
-            console.log(li.has($(e.target)));
             if( li.has($(e.target)).length == 0 ){
                 closeForm(form);
             }
         });
-        return false;
+    });
+
+    $('.content').live('mouseover', function(){
+        // scroll the text
+        var text = $('.text');
+        if( text.length > 0 ){
+            var li = $(this).parentsUntil('ol', 'li'),
+                id = li.attr('id'),
+                span = $('.sentence#'+id),
+                this_top = li.offset().top,
+                span_top = span.offset().top,
+                text_top = text.offset().top;
+            text.animate({top: text_top + this_top -span_top -65}, 100);
+            span.css('background', '#99CCFF');
+        }
+    });
+
+    $('.content').live('mouseout', function(){
+        var text = $('.text');
+        if( text.length > 0){
+            text.stop();
+            $('.sentence').css('background', '');
+        }
     });
 
     function closeForm(form){
@@ -254,6 +276,7 @@ $(function(){
             data: {content: content},
             success: function(data){
                 $('li#'+idea_id+'>.idea>.content').text(content);
+                $('.sentence#'+idea_id).text(content);
                 closeForm(form);
             }
         });
@@ -285,7 +308,8 @@ $(function(){
                 if( $(this).parent('.idea-list').length > 0){
                     text += '<p>'
                 }
-                text += '<span>' + $(this).children('.idea').text() + '</span>';
+                text += '<span class="sentence" id="'+id+'">' +
+                    $(this).children('.idea').text() + '</span>';
                 var ol = $(this).children('ol');
                 if( ol.length > 0 ){
                     text += getText(ol);
@@ -294,14 +318,19 @@ $(function(){
         });
         return text;
     }
-    $('a.view-text').click(function(){
+
+    function updateText(){
         var documents = $('.document'),
             outline = documents[0],
             ol = $(outline).find('.idea-list')
-            text = documents[1];
+            text = $(documents[1]);
 
-        $(text).html(getText(ol));
+        text.html(getText(ol));
+        text.addClass('text');
 
         return false;
-    });
+    }
+
+    $('a.view-text').click(updateText);
+
 });
