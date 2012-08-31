@@ -224,6 +224,7 @@ $(function(){
                 var item = $(data);
                 item.find('.idea').each(appendMenu);
                 li.before(item);
+                updateText();
                 savePage(li);
             }
         })
@@ -320,17 +321,20 @@ $(function(){
     }
 
     function updateText(){
-        var documents = $('.document'),
-            outline = documents[0],
-            ol = $(outline).find('.idea-list')
-            text = $(documents[1]);
+        if( $('.text').length > 0 ){
+            var documents = $('.document'),
+                outline = documents[0],
+                ol = $(outline).find('.idea-list')
+                text = $(documents[1]);
 
-        text.html(getText(ol));
-        text.addClass('text');
-
-        return false;
+            text.html(getText(ol));
+        }
     }
 
-    $('a.view-text').click(updateText);
+    $('a.view-text').click(function(){
+        $('.document:last').addClass('text');
+        updateText();
+        return false;
+    });
 
 });
