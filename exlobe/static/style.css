@@ -91,17 +91,35 @@ ol.idea-list {
 
 div.document {
     float: left;
-    width: 580px;
+    width: 40%;
     height: 1000px;
-    margin: 20px;
+    margin: 0px;
+    margin-left: 0.5%;
     border: 1px solid;
-    padding: 20px;
+    padding: 10px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 10px;
+}
+
+div.scrollable {
+    position: relative;
     overflow: auto;
 }
 
-div.text, div.outline {
-    position: relative;
+ul.summary {
+    padding: 0;
+    margin: 0;
+    float: left;
+    width: 15%;
+    height: 1000px;
+    overflow: auto;
+}
+
+.summary li {
+    font-size: 14px;
+    line-height: 18px;
+    cursor: default;
+    font-family: "Helvetica Neue",Arial,sans-serif;
+    padding: 5px;
 }

@@ -5,6 +5,15 @@ $(function(){
 
     $('div.idea').each(appendMenu);
 
+    var outline = $('.outline');
+    if( outline.length > 0 ){
+        var summary = $('.summary');
+        $('ol.idea-list>li').each(function(){
+            var text = $(this).children('.idea').children('.content').text();
+            summary.append('<li id="'+$(this).attr('id')+'">'+text+'</li>');
+        });
+    }
+
     function savePage(trigger){
         var _document = $(trigger).parents('.document');
         _document.children('form.save-page').submit();
@@ -130,57 +139,58 @@ $(function(){
         });
     });
 
+
+    function startScroll(id, item, div, target){
+        if( div.length > 0 && target.length > 0 ){
+            scrollTop = {
+                scrollTop: target.offset().top - div.offset().top
+                    + div.scrollTop()
+                    - (item.offset().top
+                        - item.parents('.scrollable').offset().top) }
+            div.animate(scrollTop , 100);
+            target.css('background', '#99CCFF');
+        }
+    }
+
+
     $('.content').live('mouseover', function(){
         // scroll the text
-        var text = $('.text');
-        if( text.length > 0 ){
-            var li = $(this).parentsUntil('ol', 'li'),
-                id = li.attr('id'),
-                span = $('.sentence#'+id);
-            scrollTop = {
-                scrollTop: span.offset().top - text.offset().top
-                    + text.scrollTop()
-                    - ($(this).offset().top
-                        - $(this).parents('.document').offset().top) }
-            text.animate(scrollTop , 100);
-            span.css('background', '#99CCFF');
-            $(this).css('background', '#99CCFF');
-        }
-    });
+        var li = $(this).parentsUntil('ol', 'li'),
+            id = li.attr('id');
 
-    $('.content').live('mouseout', function(){
-        var text = $('.text');
-        if( text.length > 0){
-            text.stop();
-            $('.sentence').css('background', '');
-            $(this).css('background', '');
-        }
+        startScroll(id, $(this), $('.text'), $('.sentence#'+id));
+        startScroll(id, $(this), $('.summary'), $('.summary li#'+id));
+        $(this).css('background', '#99CCFF');
     });
 
 
     $('.sentence').live('mouseover', function(){
-        var outline = $('.outline');
-        if ( outline.length > 0 ){
-            var id = $(this).attr('id'),
-                li = $('li#'+id);
-                text = $(this).parents('.document'),
-                this_top = $(this).offset().top,
-                li_top = li.offset().top,
-                outline_top = outline.offset().top;
-            outline.scrollTop( li_top - outline.offset().top +
-                outline.scrollTop() - (this_top - text.offset().top));
-            li.children('.idea').children('.content')
-                .css('background-color', '#99CCFF');
-            $(this).css('background', '#99CCFF');
-        }
+        var id = $(this).attr('id');
+        startScroll(id, $(this), $('.outline'), $('.outline li#'+id+'>.idea>.content'));
+        startScroll(id, $(this), $('.summary'), $('.summary li#'+id));
+        $(this).css('background', '#99CCFF');
     });
 
 
-    $('.sentence').live('mouseout', function(){
+    $('.summary li').live('mouseover', function(){
+        var id = $(this).attr('id');
+        startScroll(id, $(this), $('.outline'), $('.outline li#'+id+'>.idea>.content'));
+        startScroll(id, $(this), $('.text'), $('.sentence#'+id));
+        $(this).css('background', '#99CCFF');
+    });
+
+
+    function stopScroll(){
+        $('.text').stop();
         $('.outline').stop();
+
+        $('.summary li').css('background', '');
         $('.content').css('background', '');
-        $(this).css('background', '');
-    });
+        $('.sentence').css('background', '');
+    }
+    $('.content').live('mouseout', stopScroll);
+    $('.sentence').live('mouseout', stopScroll);
+    $('.summary li').live('mouseout', stopScroll);
 
 
     function closeForm(form){

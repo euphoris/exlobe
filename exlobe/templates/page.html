@@ -21,8 +21,11 @@
 </form>
 {% endif %}
 
+<ul class="summary scrollable">
+</ul>
+
 {% for page in pages %}
-<div class="document{% if loop.index == 1 %} outline{%endif%}">
+<div class="document scrollable{% if loop.index == 1 %} outline{%endif%}">
     <span class="title">
         <span>{{page.title}}</span>
         <a class="change-title" href="#">#</a>
@@ -63,7 +66,7 @@
 {% endfor %}
 
 {% if page_list %}
-<div class="document">
+<div class="document scrollable">
     <ul>
         <li><a class="view-text" href="#">text</a></li>
     {% for page in page_list %}
