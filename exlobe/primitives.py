@@ -52,15 +52,14 @@ class Idea(Base, Managed):
 
     id = Column(Integer, primary_key=True)
     content = Column(String)
-    reference_count = Column(Integer)
+    reference_count = Column(Integer, default=1)
 
     @classmethod
     def new(cls, page_id, content):
         session = Session()
         with session.begin():
-            page = Page.get(page_id)
-            idea = Idea(content=content, reference_count=1)
-            session.add(idea)
+            page = session.query(Page).get(page_id)
+            idea = Idea(content=content)
             page.ideas.append(idea)
 
         with session.begin():
