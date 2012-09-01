@@ -92,15 +92,16 @@ ol.idea-list {
 div.document {
     float: left;
     width: 580px;
-    min-height: 50%;
+    height: 1000px;
     margin: 20px;
     border: 1px solid;
     padding: 20px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 10px;
+    overflow: auto;
 }
 
-div.text {
+div.text, div.outline {
     position: relative;
 }

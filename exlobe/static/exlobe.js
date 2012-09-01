@@ -136,12 +136,15 @@ $(function(){
         if( text.length > 0 ){
             var li = $(this).parentsUntil('ol', 'li'),
                 id = li.attr('id'),
-                span = $('.sentence#'+id),
-                this_top = li.offset().top,
-                span_top = span.offset().top,
-                text_top = text.offset().top;
-            text.animate({top: text_top + this_top -span_top -65}, 100);
+                span = $('.sentence#'+id);
+            scrollTop = {
+                scrollTop: span.offset().top - text.offset().top
+                    + text.scrollTop()
+                    - ($(this).offset().top
+                        - $(this).parents('.document').offset().top) }
+            text.animate(scrollTop , 100);
             span.css('background', '#99CCFF');
+            $(this).css('background', '#99CCFF');
         }
     });
 
@@ -150,8 +153,35 @@ $(function(){
         if( text.length > 0){
             text.stop();
             $('.sentence').css('background', '');
+            $(this).css('background', '');
         }
     });
+
+
+    $('.sentence').live('mouseover', function(){
+        var outline = $('.outline');
+        if ( outline.length > 0 ){
+            var id = $(this).attr('id'),
+                li = $('li#'+id);
+                text = $(this).parents('.document'),
+                this_top = $(this).offset().top,
+                li_top = li.offset().top,
+                outline_top = outline.offset().top;
+            outline.scrollTop( li_top - outline.offset().top +
+                outline.scrollTop() - (this_top - text.offset().top));
+            li.children('.idea').children('.content')
+                .css('background-color', '#99CCFF');
+            $(this).css('background', '#99CCFF');
+        }
+    });
+
+
+    $('.sentence').live('mouseout', function(){
+        $('.outline').stop();
+        $('.content').css('background', '');
+        $(this).css('background', '');
+    });
+
 
     function closeForm(form){
         $('html').unbind('click.xxx');

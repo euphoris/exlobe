@@ -22,7 +22,7 @@
 {% endif %}
 
 {% for page in pages %}
-<div class="document">
+<div class="document{% if loop.index == 1 %} outline{%endif%}">
     <span class="title">
         <span>{{page.title}}</span>
         <a class="change-title" href="#">#</a>
