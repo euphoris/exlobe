@@ -20,6 +20,41 @@ $(function(){
         return false;
     }
 
+    // scroll at edge
+    function activeScrollEdge(e){
+            var threshold = 20,
+                step = 200;
+            $('.scrollable').each(function(){
+                $(this).stop();
+                var offset = $(this).offset(),
+                    width = parseInt($(this).css('width')),
+                    height = parseInt($(this).css('height'));
+
+                if( offset.left < e.pageX && e.pageX < offset.left + width ){
+                    var pos = $(this).scrollTop();
+                    if( Math.abs(offset.top - e.pageY) < threshold ){
+                        scr = { scrollTop: 0 }//$(this).scrollTop() - step }
+                        $(this).animate(scr, 2*pos);
+
+                    } else if( Math.abs(offset.top + height - e.pageY)
+                               < threshold ){
+                        var bottom = this.scrollHeight;
+                        scr = { scrollTop: bottom }//$(this).scrollTop() + step }
+                        $(this).animate(scr, 2*(bottom-pos));
+                    }
+                }
+            });
+    }
+
+    function deactiveScrollEdge(e){
+    }
+
+    scrollEdge = deactiveScrollEdge;
+
+    $(document).mousemove(function(e){
+        scrollEdge(e);
+    });
+
     // sort/copy/move ideas
     var overCount = 0, copiedItem, parentItem = [], prevItem = [];
 
@@ -87,9 +122,15 @@ $(function(){
             updateText();
             savePage(this);
         },
-        start: function(e, ui){ startFunc(e, ui) },
+        start: function(e, ui){
+            scrollEdge = activeScrollEdge;
+            startFunc(e, ui);
+        },
         over: function(e,ui){ overFunc(e, ui) },
-        receive: function(e,ui){ receiveFunc(e, ui) }
+        receive: function(e,ui){ receiveFunc(e, ui) },
+        stop: function(e, ui){
+            scrollEdge = deactiveScrollEdge;
+        }
 
     }).disableSelection();
 
