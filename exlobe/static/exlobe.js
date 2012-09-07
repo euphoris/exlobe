@@ -1,4 +1,6 @@
 $(function(){
+    var KEY_ENTER = 13;
+
     function appendMenu(i, div){
         $($('#menu-skeleton').html()).appendTo(div);
     }
@@ -134,6 +136,7 @@ $(function(){
 
     }).disableSelection();
 
+    // edit form
     $('a.copy').live('click', function(){
         li1 = $(this).parentsUntil('ol', 'li');
         li2 = li1.clone();
@@ -156,6 +159,21 @@ $(function(){
         _document.children('form.save-page').submit();
         return false;
     });
+
+
+    $('.edit-area').live('keydown', function(e){
+        if( e.keyCode == KEY_ENTER ){
+            e.preventDefault();
+            var form = $(this).parents('form'),
+                li = $(this).parentsUntil('ol', 'li');
+                ol = li.children('ol'),
+                append = $(this).parents('.document').find('li[id=0]');
+            closeForm(form);
+            li.after(append);
+            append.find('textarea').focus();
+        }
+    });
+
 
     $('.content').live('click', function(){
         var li = $(this).parentsUntil('ol', 'li'),
