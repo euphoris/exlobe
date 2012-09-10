@@ -1,6 +1,12 @@
 $(function(){
     var KEY_ENTER = 13;
 
+    // common functions
+    function parent_li(that){
+        return $(that).parentsUntil('ol', 'li')
+    }
+
+
     function appendMenu(i, div){
         $($('#menu-skeleton').html()).appendTo(div);
     }
@@ -138,7 +144,7 @@ $(function(){
 
     // edit form
     $('a.copy').live('click', function(){
-        li1 = $(this).parentsUntil('ol', 'li');
+        li1 = parent_li(this),
         li2 = li1.clone();
         li1.after(li2);
         closeForm(li2.find('form'));
@@ -149,7 +155,7 @@ $(function(){
 
     $('a.remove').live('click', function(){
         var _document = $(this).parents('.document'),
-            li1 = $(this).parentsUntil('ol', 'li'),
+            li1 = parent_li(this),
             append = li1.find('li[id=0]');
         if( append.length > 0 ) li1.before(append);
 
@@ -165,7 +171,7 @@ $(function(){
         if( e.keyCode == KEY_ENTER ){
             e.preventDefault();
             var form = $(this).parents('form'),
-                li = $(this).parentsUntil('ol', 'li');
+                li = parent_li(this),
                 ol = li.children('ol'),
                 append = $(this).parents('.document').find('li[id=0]');
             closeForm(form);
@@ -176,7 +182,7 @@ $(function(){
 
 
     $('.content').live('click', function(){
-        var li = $(this).parentsUntil('ol', 'li'),
+        var li = parent_li(this),
             div = li.children('.idea'),
             text = div.children('.content').text();
 
@@ -214,7 +220,7 @@ $(function(){
 
     $('.content').live('mouseover', function(){
         // scroll the text
-        var li = $(this).parentsUntil('ol', 'li'),
+        var li = parent_li(this),
             id = li.attr('id');
 
         startScroll(id, $(this), $('.text'), $('.sentence#'+id));
@@ -312,9 +318,9 @@ $(function(){
     });
 
     $('form.append-idea').submit(function(){
-        var li = $(this).parentsUntil('ol', 'li');
-        var textarea = $(this).children('textarea[name=content]');
-        var content = textarea.val();
+        var li = parent_li(this),
+            textarea = $(this).children('textarea[name=content]'),
+            content = textarea.val();
         textarea.val('');
         $.ajax({
             url: $(this).attr('action'),
@@ -343,12 +349,12 @@ $(function(){
     $('.append-idea textarea').keydown(function(e){
         if( e.keyCode == 9){ // TAB
             e.preventDefault();
-            var li = $(this).parentsUntil('ol','li');
+            var li = parent_li(this);
             if(e.shiftKey){ // SHIFT TAB
                 // dedent
-                var parent_li = li.parent().parentsUntil('ol', 'li');
-                if ( parent_li.length > 0 ){
-                    parent_li.after(li);
+                var grandparent_li = parent_li(li.parent());
+                if ( grandparent_li.length > 0 ){
+                    grandparent_li.after(li);
                 }
 
             } else {
@@ -369,7 +375,7 @@ $(function(){
 
     $('form.edit-idea').live('submit', function(){
         var form = $(this),
-            idea_id = form.parentsUntil('ol', 'li').attr('id'),
+            idea_id = parent_li(form).attr('id'),
             content = form.children('textarea').val();
 
         $.ajax({
