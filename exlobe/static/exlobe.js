@@ -169,6 +169,19 @@ $(function(){
     });
 
 
+    $('a.dedent-children').live('click', function(){
+        var li = parent_li(this),
+            ol = li.children('ol');
+        if( ol.length > 0 ){
+            ol.children('li').each(function(){
+                li.after(this);
+            });
+            ol.remove();
+        }
+        return savePage(this);
+    });
+
+
     $('a.remove').live('click', function(){
         var _document = $(this).parents('.document'),
             li1 = parent_li(this),
