@@ -153,6 +153,22 @@ $(function(){
 
     });
 
+
+    $('a.indent-following').live('click', function(){
+        var li = parent_li(this),
+            grandparent_li = parent_li(li.parent());
+        if( grandparent_li.length > 0 ){
+            var ol = li.children('ol');
+            if( ol.length == 0 ) ol = $('<ol></ol>').appendTo(li);
+
+            li.nextAll('li').each(function(){
+                $(this).appendTo(ol);
+            });
+        }
+        return savePage(this);
+    });
+
+
     $('a.remove').live('click', function(){
         var _document = $(this).parents('.document'),
             li1 = parent_li(this),
