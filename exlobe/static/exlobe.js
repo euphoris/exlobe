@@ -173,9 +173,7 @@ $(function(){
         var li = parent_li(this),
             ol = li.children('ol');
         if( ol.length > 0 ){
-            ol.children('li').each(function(){
-                li.after(this);
-            });
+            li.after(ol.html());
             ol.remove();
         }
         return savePage(this);
