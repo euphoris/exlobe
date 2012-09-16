@@ -130,6 +130,17 @@ class TestGet(TestBase):
 
         session = Session()
         assert session.query(Idea).get(1).content == content
+        assert not session.query(Idea).get(1).hidden
+
+
+    def test_hide_idea(self):
+        content = 'world!'
+        rv = self.post('edit_idea', idea_id=1,
+            data=dict(content=content, hidden=u'true'))
+        assert rv.status_code == HTTP_OK
+
+        session = Session()
+        assert session.query(Idea).get(1).hidden
 
 
     def test_remove_idea(self):

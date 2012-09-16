@@ -180,6 +180,20 @@ $(function(){
     });
 
 
+    $('input.toggle-hide').live('change', function(){
+        var form = $(this).parents('form'),
+            idea = $(this).parents('.idea');
+
+        if ($(this).is(':checked')){
+            idea.addClass('hidden');
+        } else {
+            idea.removeClass('hidden');
+        }
+
+        form.submit();
+    });
+
+
     $('a.remove').live('click', function(){
         var _document = $(this).parents('.document'),
             li1 = parent_li(this),
@@ -216,6 +230,10 @@ $(function(){
         div.children('.content').hide()
 
         var form = $('#edit-skeleton').children('form').clone();
+        if (div.hasClass('hidden')){
+            form.children('input.toggle-hide').attr('checked',true);
+        }
+
         div.append(form);
 
         form.find('textarea').val(text);
@@ -403,15 +421,24 @@ $(function(){
     $('form.edit-idea').live('submit', function(){
         var form = $(this),
             idea_id = parent_li(form).attr('id'),
+            hidden = parent_li(form).children('.idea').hasClass('hidden'),
             content = form.children('textarea').val();
 
         $.ajax({
             url: $(this).attr('action'),
             type: 'POST',
-            data: {content: content},
+            data: {content: content, hidden: hidden},
             success: function(data){
                 $('li#'+idea_id+'>.idea>.content').text(content);
-                $('.sentence#'+idea_id).text(content);
+                var sentence = $('.sentence#'+idea_id);
+                sentence.text(content);
+
+                if( hidden ){
+                    sentence.addClass('hidden');
+                } else {
+                    sentence.removeClass('hidden');
+                }
+
                 closeForm(form);
             }
         });
@@ -443,8 +470,15 @@ $(function(){
                 if( $(this).parent('.idea-list').length > 0){
                     text += '<p>'
                 }
-                text += '<span class="sentence" id="'+id+'">' +
-                    $(this).children('.idea').text() + '</span>';
+
+                var idea = $(this).children('.idea'),
+                    cls = '';
+                if ( idea.hasClass('hidden') ){
+                    cls = ' hidden';
+                }
+
+                text += '<span class="sentence' + cls + '" id="' + id + '">' +
+                    idea.text() + '</span>';
                 var ol = $(this).children('ol');
                 if( ol.length > 0 ){
                     text += getText(ol);

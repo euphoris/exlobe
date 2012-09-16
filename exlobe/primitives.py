@@ -5,7 +5,7 @@
 
 from flask import current_app
 from sqlalchemy import create_engine, Column
-from sqlalchemy.types import Integer, String, TEXT
+from sqlalchemy.types import Boolean, Integer, String, TEXT
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import create_session, relationship
 from sqlalchemy.schema import ForeignKey, Table
@@ -53,6 +53,7 @@ class Idea(Base, Managed):
     id = Column(Integer, primary_key=True)
     content = Column(String)
     reference_count = Column(Integer, default=1)
+    hidden = Column(Boolean, default=False)
 
     @classmethod
     def new(cls, page_id, content):
@@ -66,7 +67,7 @@ class Idea(Base, Managed):
             page.struct = '{} {}'.format(idea.id, page.struct)
             session.merge(page)
 
-        return idea.id
+        return idea
 
 
 class Page(Base, Managed):

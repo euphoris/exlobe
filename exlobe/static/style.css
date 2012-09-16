@@ -72,6 +72,15 @@ textarea.edit-area {
     font-family: "Helvetica Neue",Arial,sans-serif;
 }
 
+.hidden .content {
+    text-decoration: line-through;
+    color: gray;
+}
+
+span.hidden {
+    display: none;
+}
+
 a.remove {
     float: right;
 }

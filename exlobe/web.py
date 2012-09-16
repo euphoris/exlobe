@@ -127,17 +127,24 @@ def save_page(page_id):
 
     return 'ok'
 
-idea_format = u"""
-    <li id="{}">
-        <div class="idea">
-            <div class="content">{}</div>
-        </div>
-"""
+def format_idea(idea):
+    cls = ''
+    if idea.hidden:
+        cls = ' hidden'
+
+    return u"""
+        <li id="{}">
+            <div class="idea{}">
+                <div class="content">{}</div>
+            </div>
+    """.format(idea.id, cls, idea.content)
+
+
 @srg.template_filter('render_page')
 def render_page(page):
     ideas = {}
     for idea in page.ideas:
-        ideas[idea.id] = idea.content
+        ideas[idea.id] = idea
 
     tree = ''
     struct = page.struct.strip().split()
@@ -149,7 +156,7 @@ def render_page(page):
         else:
             i = int(s)
             try:
-                tree += idea_format.format(i, ideas[i])
+                tree += format_idea(ideas[i])
             except KeyError:
                 pass
 
@@ -191,8 +198,8 @@ def delete_page(page_id):
 @srg.route('/page/<int:page_id>', methods=['POST'])
 def new_idea(page_id):
     content = request.form['content'].strip()
-    idea_id = Idea.new(page_id, content)
-    return idea_format.format(idea_id, content)
+    idea = Idea.new(page_id, content)
+    return format_idea(idea)
 
 
 paragraph_re = re.compile(r'[\r\n][\r\n]+')
@@ -212,7 +219,7 @@ def import_text():
         is_first = True
         for s in sentences:
             idea = Idea.new(page.id, s)
-            struct += '{} '.format(idea)
+            struct += '{} '.format(idea.id)
             if is_first:
                 struct += '[ '
                 is_first = False
@@ -226,7 +233,8 @@ def import_text():
 @srg.route('/idea/<int:idea_id>', methods=['POST'])
 def edit_idea(idea_id):
     content = request.form['content'].strip()
-    Idea.update(idea_id, content=content)
+    hidden = request.form.get('hidden', u'false') == u'true'
+    Idea.update(idea_id, content=content, hidden=hidden)
     return 'ok'
 
 
@@ -250,7 +258,7 @@ def home():
     return redirect(url_for('get_page_list'))
 
 
-def create_app(uri, echo=True):
+def create_app(uri, echo=False):
     app = Exlobe(__name__, uri, echo)
     srg.incarnate(app)
     return app
