@@ -44,6 +44,20 @@ $(function(){
         });
     }
 
+    // resize
+    function resizeScrollable(){
+        var menu = $('#menu'),
+            body = $('body'),
+            h = $(window).height() - menu.height()
+                - parseInt(menu.css('margin-bottom'))
+                - 2*parseInt($('.document').css('padding'))
+                - 20;
+        $('.scrollable').height(h);
+    }
+
+    resizeScrollable();
+    $(window).resize(resizeScrollable);
+
     // scroll at edge
     function activeScrollEdge(e){
             var threshold = 20,
