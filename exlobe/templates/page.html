@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 
+{% block menu %}
+<a class="undo" href="#">undo</a>
+{% endblock %}
+
 {% block body %}
 <div id="edit-skeleton" style="display: none">
     <form class="edit-idea" method="POST" action="/idea/">
         <textarea  class="edit-area" name="content"></textarea>
-        <button>save</button>
         <a class="copy" href="#">copy</a>
         <a class="indent-following" href="#">indent followings</a>
         <a class="dedent-children" href="#">dedent children</a>

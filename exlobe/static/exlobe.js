@@ -1,6 +1,13 @@
 $(function(){
     var KEY_ENTER = 13;
 
+    // controller
+    function Controller(){
+        this.temp = '';
+        this.temp_id = null;
+    }
+    var controller = new Controller();
+
     // common functions
     function parent_li(that){
         return $(that).parentsUntil('ol', 'li')
@@ -26,6 +33,15 @@ $(function(){
         var _document = $(trigger).parents('.document');
         _document.children('form.save-page').submit();
         return false;
+    }
+
+    function editIdea(idea_id, content){
+        var hidden = $('ol>li#'+idea_id+'>.idea').hasClass('hidden');
+        $.ajax({
+            url: '/idea/'+idea_id,
+            type: 'POST',
+            data: {content: content, hidden: hidden},
+        });
     }
 
     // scroll at edge
@@ -146,7 +162,9 @@ $(function(){
     $('a.copy').live('click', function(){
         li1 = parent_li(this),
         li2 = li1.clone();
+        li2.find('textarea').val(li1.find('textarea').val());
         li1.after(li2);
+        closeForm(li1.find('form'));
         closeForm(li2.find('form'));
 
         return savePage(this);
@@ -190,7 +208,7 @@ $(function(){
             idea.removeClass('hidden');
         }
 
-        form.submit();
+        closeForm(form);
     });
 
 
@@ -225,28 +243,49 @@ $(function(){
     $('.content').live('click', function(){
         var li = parent_li(this),
             div = li.children('.idea'),
-            text = div.children('.content').text();
+            text = div.children('.content').text(),
+            form = $('#edit-skeleton').children('form').clone(),
+            textarea = form.find('textarea');
+
+        controller.temp = text;
+        controller.temp_id = li.attr('id');
 
         div.children('.content').hide()
 
-        var form = $('#edit-skeleton').children('form').clone();
         if (div.hasClass('hidden')){
             form.children('input.toggle-hide').attr('checked',true);
         }
 
         div.append(form);
 
-        form.find('textarea').val(text);
+        textarea.val(text);
 
         var action = form.attr('action');
         form.attr('action', action+li.attr('id'));
 
-        form.find('textarea').focus();
+        textarea.focus();
         $('html').bind('click.xxx', function(e){
             if( li.has($(e.target)).length == 0 ){
                 closeForm(form);
             }
         });
+    });
+
+
+    $('a.undo').click(function(){
+        var li = $('ol>li#'+controller.temp_id),
+            content = li.find('.content:first'),
+            textarea = li.find('textarea');
+
+        if( textarea.length > 0 ){
+            textarea.val(controller.temp);
+            textarea.focus();
+        } else {
+            content.text(controller.temp);
+            editIdea(controller.temp_id, controller.temp);
+        }
+
+        return false;
     });
 
 
@@ -304,9 +343,31 @@ $(function(){
 
 
     function closeForm(form){
-        $('html').unbind('click.xxx');
-        form.siblings('.content').show();
-        form.remove();
+
+        var idea_id = parent_li(form).attr('id'),
+            hidden = parent_li(form).children('.idea').hasClass('hidden'),
+            content = form.children('textarea').val();
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: {content: content, hidden: hidden},
+            success: function(data){
+                $('li#'+idea_id+'>.idea>.content').text(content);
+                var sentence = $('.sentence#'+idea_id);
+                sentence.text(content);
+
+                if( hidden ){
+                    sentence.addClass('hidden');
+                } else {
+                    sentence.removeClass('hidden');
+                }
+
+                $('html').unbind('click.xxx');
+                form.siblings('.content').show();
+                form.remove();
+            }
+        });
     }
 
     $('a.change-title').live('click', function(){
@@ -418,32 +479,6 @@ $(function(){
         }
     });
 
-    $('form.edit-idea').live('submit', function(){
-        var form = $(this),
-            idea_id = parent_li(form).attr('id'),
-            hidden = parent_li(form).children('.idea').hasClass('hidden'),
-            content = form.children('textarea').val();
-
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: {content: content, hidden: hidden},
-            success: function(data){
-                $('li#'+idea_id+'>.idea>.content').text(content);
-                var sentence = $('.sentence#'+idea_id);
-                sentence.text(content);
-
-                if( hidden ){
-                    sentence.addClass('hidden');
-                } else {
-                    sentence.removeClass('hidden');
-                }
-
-                closeForm(form);
-            }
-        });
-        return false;
-    });
 
     $('form.page-title').submit(function(){
         form = $(this)

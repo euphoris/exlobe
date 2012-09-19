@@ -12,6 +12,8 @@
         <div id="menu">
             <a href="/">HOME</a>
             <a href="{{url_for('list_garbage')}}">garbage</a>
+            {% block menu %}
+            {% endblock %}
         </div>
         {% block body %}
         {% endblock %}
