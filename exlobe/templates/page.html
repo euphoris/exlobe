@@ -73,6 +73,7 @@
 
 {% if page_list %}
 <div class="document scrollable">
+    <a class="close-text" href="#" style="float: right">X</a>
     <ul>
         <li><a class="view-text" href="#">text</a></li>
     {% for page in page_list %}
@@ -85,8 +86,9 @@
         </li>
         {% endif %}
     {% endfor %}
-    <ul>
+    </ul>
 
+    <div class="text"></div>
 </div>
 {% endif %}
 {% endblock %}

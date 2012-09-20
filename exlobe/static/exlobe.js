@@ -5,6 +5,7 @@ $(function(){
     function Controller(){
         this.temp = '';
         this.temp_id = null;
+        this.mode = 'notext';
     }
     var controller = new Controller();
 
@@ -538,20 +539,29 @@ $(function(){
     }
 
     function updateText(){
-        if( $('.text').length > 0 ){
+        if( controller.mode == 'text' ){
             var documents = $('.document'),
                 outline = documents[0],
                 ol = $(outline).find('.idea-list')
-                text = $(documents[1]);
+                text = $('.text');
 
             text.html(getText(ol));
         }
     }
 
     $('a.view-text').click(function(){
-        $('.document:last').addClass('text');
+        $(this).parents('ul').hide();
+        $('.text').show();
+        controller.mode = 'text';
         updateText();
         return false;
     });
 
+
+    $('a.close-text').click(function(){
+        $(this).siblings('ul').show();
+        $('.text').hide();
+        controller.mode = 'notext';
+        return false;
+    });
 });
