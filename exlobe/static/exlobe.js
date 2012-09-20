@@ -320,9 +320,10 @@ $(function(){
     $('.content').live('mouseover', function(){
         // scroll the text
         var li = parent_li(this),
-            id = li.attr('id');
+            id = li.attr('id'),
+            text = $('.text').parents('.scrollable');
 
-        startScroll(id, $(this), $('.text'), $('.sentence#'+id));
+        startScroll(id, $(this), text, $('.sentence#'+id));
         startScroll(id, $(this), $('.summary'), $('.summary li#'+id));
         $(this).css('background', '#99CCFF');
     });
@@ -337,9 +338,11 @@ $(function(){
 
 
     $('.summary li').live('mouseover', function(){
-        var id = $(this).attr('id');
+        var id = $(this).attr('id'),
+            text = $('.text').parents('.scrollable');
+
         startScroll(id, $(this), $('.outline'), $('.outline li#'+id+'>.idea>.content'));
-        startScroll(id, $(this), $('.text'), $('.sentence#'+id));
+        startScroll(id, $(this), text, $('.sentence#'+id));
         $(this).css('background', '#99CCFF');
     });
 
